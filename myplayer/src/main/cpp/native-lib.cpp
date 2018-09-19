@@ -1,35 +1,47 @@
 #include <jni.h>
 #include <string>
-#include <android/log.h>
+#include "XsFFmpeg.h"
+
 
 extern "C"
 {
 #include <libavformat/avformat.h>
 }
 
+JavaVM *javaVM = NULL;
+XsFFmpeg *fFmpeg = NULL;
+XsCallJava *callJava = NULL;
 
-#define LOGI(FORMAT,...) __android_log_print(ANDROID_LOG_INFO,"zxsong",FORMAT,##__VA_ARGS__);
+extern "C"
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
+
+    JNIEnv *env;
+    javaVM = jvm;
+    if(jvm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
+        return -1;
+    }
+    return JNI_VERSION_1_6;
+}
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_zxsong_media_myplayer_Demo_testFfmpeg(JNIEnv *env, jobject instance) {
+Java_com_zxsong_media_myplayer_player_XsPlayer_n_1prepared(JNIEnv *env, jobject instance,
+                                                           jstring source_) {
+    const char *source = env->GetStringUTFChars(source_, 0);
 
-    av_register_all();
-    AVCodec *c_temp = av_codec_next(NULL);
-    while (c_temp != NULL)
-    {
-        switch (c_temp->type)
-        {
-            case AVMEDIA_TYPE_VIDEO:
-                LOGI("[Video]:%s", c_temp->name);
-                break;
-            case AVMEDIA_TYPE_AUDIO:
-                LOGI("[Audio]:%s", c_temp->name);
-                break;
-            default:
-                LOGI("[Other]:%s", c_temp->name);
-                break;
+    if (fFmpeg == NULL) {
+        if (callJava == NULL) {
+            callJava = new XsCallJava(javaVM, env, instance);
         }
-        c_temp = c_temp->next;
+        fFmpeg = new XsFFmpeg(callJava, source);
+        fFmpeg->parpared();
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_zxsong_media_myplayer_player_XsPlayer_n_1start(JNIEnv *env, jobject instance) {
+
+    if (fFmpeg != NULL) {
+        fFmpeg->start();
     }
 }

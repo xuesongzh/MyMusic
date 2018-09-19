@@ -8,6 +8,9 @@ add_library( # Sets the name of the library.
 
              SHARED
 
+             src/main/cpp/XsAudio.cpp
+             src/main/cpp/XsCallJava.cpp
+             src/main/cpp/XsFFmpeg.cpp
              src/main/cpp/native-lib.cpp )
 
 add_library( avcodec-57 SHARED IMPORTED)

@@ -19,5 +19,5 @@ public class Demo {
 
     }
 
-    public native void testFfmpeg();
+//    public native void testFfmpeg();
 }

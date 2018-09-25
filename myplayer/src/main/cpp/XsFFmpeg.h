@@ -8,6 +8,7 @@
 #include "XsCallJava.h"
 #include "pthread.h"
 #include "XsAudio.h"
+#include "XsPlaystatus.h"
 
 extern "C"
 {
@@ -22,9 +23,10 @@ public:
     pthread_t decodeThread;
     AVFormatContext *pFormatCtx = NULL;
     XsAudio *audio = NULL;
+    XsPlaystatus *playstatus = NULL;
 
 public:
-    XsFFmpeg(XsCallJava *callJava, const char *url);
+    XsFFmpeg(XsPlaystatus *playstatus, XsCallJava *callJava, const char *url);
     ~XsFFmpeg();
 
     void parpared();

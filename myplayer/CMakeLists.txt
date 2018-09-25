@@ -8,6 +8,8 @@ add_library( # Sets the name of the library.
 
              SHARED
 
+             src/main/cpp/XsQueue.cpp
+             src/main/cpp/XsPlaystatus.cpp
              src/main/cpp/XsAudio.cpp
              src/main/cpp/XsCallJava.cpp
              src/main/cpp/XsFFmpeg.cpp

@@ -4,7 +4,8 @@
 
 #include "XsFFmpeg.h"
 
-XsFFmpeg::XsFFmpeg(XsCallJava *callJava, const char *url) {
+XsFFmpeg::XsFFmpeg(XsPlaystatus *playstatus, XsCallJava *callJava, const char *url) {
+    this->playstatus = playstatus;
     this->callJava = callJava;
     this->url = url;
 }
@@ -44,7 +45,7 @@ void XsFFmpeg::decodeFFmpegThread() {
     for (int i = 0; i < pFormatCtx->nb_streams; ++i) {
         if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             if (audio == NULL) {
-                audio = new XsAudio();
+                audio = new XsAudio(playstatus);
                 audio->streamIndex = i;
                 audio->avCodecPar = pFormatCtx->streams[i]->codecpar;
             }
@@ -103,8 +104,7 @@ void XsFFmpeg::start() {
                 if (LOG_DEBUG) {
                     LOGE("解码第 %d 帧", count);
                 }
-                av_packet_free(&avPacket);
-                av_free(avPacket);
+                audio->queue->putAvpacket(avPacket);
             } else {
                 av_packet_free(&avPacket);
                 av_free(avPacket);
@@ -119,4 +119,15 @@ void XsFFmpeg::start() {
         }
     }
 
+    //模拟出队
+    while (audio->queue->getQueueSize() > 0) {
+        AVPacket *avPacket = av_packet_alloc();
+        audio->queue->getAvpacket(avPacket);
+        av_packet_free(&avPacket);
+        av_free(avPacket);
+        avPacket = NULL;
+    }
+    if(LOG_DEBUG) {
+        LOGD("解码完成");
+    }
 }

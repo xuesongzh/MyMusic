@@ -4646,7 +4646,7 @@ void av_packet_free_side_data(AVPacket *pkt);
 /**
  * Setup a new reference to the data described by a given packet
  *
- * If src is reference-counted, setup dst as a new reference to the
+ * If src is reference-COUNTED, setup dst as a new reference to the
  * buffer in src. Otherwise allocate a new buffer in dst and copy the
  * data from src into it.
  *

@@ -4,10 +4,13 @@
 
 #include "XsAudio.h"
 
-XsAudio::XsAudio() {
-
+XsAudio::XsAudio(XsPlaystatus *playstatus) {
+    this->playstatus = playstatus;
+    queue = new XsQueue(playstatus);
 }
 
 XsAudio::~XsAudio() {
 
 }
+
+

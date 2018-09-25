@@ -5,6 +5,9 @@
 #ifndef MYMUSIC_XSAUDIO_H
 #define MYMUSIC_XSAUDIO_H
 
+#include "XsPlaystatus.h"
+#include "XsQueue.h"
+
 extern "C"
 {
 #include "libavcodec/avcodec.h"
@@ -15,9 +18,11 @@ public:
     int streamIndex = -1;
     AVCodecContext *avCodecCtx = NULL;
     AVCodecParameters *avCodecPar = NULL;
+    XsPlaystatus *playstatus = NULL;
+    XsQueue *queue = NULL;
 
 public:
-    XsAudio();
+    XsAudio(XsPlaystatus *playstatus);
     ~XsAudio();
 };
 

@@ -94,9 +94,10 @@ void XsFFmpeg::start() {
         }
     }
 
+    audio->play();
     //8、读取音频帧
     int count = 0;
-    while (1) {
+    while (playstatus != NULL && !playstatus->exit) {
         AVPacket *avPacket = av_packet_alloc();
         if (av_read_frame(pFormatCtx, avPacket) == 0) {
             if (avPacket->stream_index == audio->streamIndex) {
@@ -108,6 +109,7 @@ void XsFFmpeg::start() {
             } else {
                 av_packet_free(&avPacket);
                 av_free(avPacket);
+                avPacket = NULL;
             }
         } else {
             if(LOG_DEBUG) {
@@ -115,18 +117,26 @@ void XsFFmpeg::start() {
             }
             av_packet_free(&avPacket);
             av_free(avPacket);
-            break;
+            avPacket = NULL;
+            while (playstatus != NULL && !playstatus->exit) {
+                if (audio->queue->getQueueSize() > 0) {
+                    continue;
+                } else {
+                    playstatus->exit = true;
+                    break;
+                }
+            }
         }
     }
 
     //模拟出队
-    while (audio->queue->getQueueSize() > 0) {
-        AVPacket *avPacket = av_packet_alloc();
-        audio->queue->getAvpacket(avPacket);
-        av_packet_free(&avPacket);
-        av_free(avPacket);
-        avPacket = NULL;
-    }
+//    while (audio->queue->getQueueSize() > 0) {
+//        AVPacket *avPacket = av_packet_alloc();
+//        audio->queue->getAvpacket(avPacket);
+//        av_packet_free(&avPacket);
+//        av_free(avPacket);
+//        avPacket = NULL;
+//    }
     if(LOG_DEBUG) {
         LOGD("解码完成");
     }

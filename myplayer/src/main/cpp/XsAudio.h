@@ -11,6 +11,7 @@
 extern "C"
 {
 #include "libavcodec/avcodec.h"
+#include <libswresample/swresample.h>
 };
 
 class XsAudio {
@@ -21,9 +22,19 @@ public:
     XsPlaystatus *playstatus = NULL;
     XsQueue *queue = NULL;
 
+    pthread_t playThread;
+    AVPacket *avPacket = NULL;
+    AVFrame *avFrame = NULL;
+    int ret = 0;
+    uint8_t *buffer = NULL;
+    int data_size = 0;
+
 public:
     XsAudio(XsPlaystatus *playstatus);
     ~XsAudio();
+
+    void play();
+    int resampleAudio();
 };
 
 

@@ -45,7 +45,7 @@ void XsFFmpeg::decodeFFmpegThread() {
     for (int i = 0; i < pFormatCtx->nb_streams; ++i) {
         if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             if (audio == NULL) {
-                audio = new XsAudio(playstatus);
+                audio = new XsAudio(playstatus,pFormatCtx->streams[i]->codecpar->sample_rate);
                 audio->streamIndex = i;
                 audio->avCodecPar = pFormatCtx->streams[i]->codecpar;
             }

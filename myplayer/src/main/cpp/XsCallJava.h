@@ -18,13 +18,17 @@ public:
     JavaVM *javaVM = NULL;
     JNIEnv *jniEnv = NULL;
     jobject jobj;
+
     jmethodID jmid_prepared;
+    jmethodID jmid_load;
 
 public:
     XsCallJava(JavaVM *javaVM, JNIEnv *env, jobject obj);
     ~XsCallJava();
 
     void onCallPrepared(int type);
+
+    void onCallLoad(int type, bool load);
 };
 
 

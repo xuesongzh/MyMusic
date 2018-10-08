@@ -7,6 +7,7 @@
 
 #include "XsPlaystatus.h"
 #include "XsQueue.h"
+#include "XsCallJava.h"
 
 extern "C"
 {
@@ -23,6 +24,7 @@ public:
     AVCodecParameters *avCodecPar = NULL;
     XsPlaystatus *playstatus = NULL;
     XsQueue *queue = NULL;
+    XsCallJava *callJava = NULL;
 
     pthread_t playThread;
     AVPacket *avPacket = NULL;
@@ -49,7 +51,7 @@ public:
     SLAndroidSimpleBufferQueueItf pcmBufferQueue = NULL;
 
 public:
-    XsAudio(XsPlaystatus *playstatus, int sample_rate);
+    XsAudio(XsPlaystatus *playstatus, int sample_rate, XsCallJava *callJava1);
     ~XsAudio();
 
     void play();

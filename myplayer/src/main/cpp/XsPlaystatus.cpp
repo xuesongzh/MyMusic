@@ -6,4 +6,5 @@
 
 XsPlaystatus::XsPlaystatus() {
     exit = false;
+    load = true;
 }

@@ -4,11 +4,12 @@
 
 #include "XsAudio.h"
 
-XsAudio::XsAudio(XsPlaystatus *playstatus, int sample_rate) {
+XsAudio::XsAudio(XsPlaystatus *playstatus, int sample_rate, XsCallJava *callJava) {
     this->playstatus = playstatus;
     this->sample_rate = sample_rate;
+    this->callJava = callJava;
     queue = new XsQueue(playstatus);
-    buffer = (uint8_t *) av_malloc(44100 * 2 * 2);//1s的PCM大小
+    buffer = (uint8_t *) av_malloc(sample_rate * 2 * 2);//1s的PCM大小
 }
 
 XsAudio::~XsAudio() {
@@ -31,6 +32,21 @@ void XsAudio::play() {
 int XsAudio::resampleAudio() {
 
     while (playstatus != NULL && !playstatus->exit) {
+
+        //添加加载功能
+        if (queue->getQueueSize() == 0) {//加载中
+            if (!playstatus->load) {
+                playstatus->load = true;
+                callJava->onCallLoad(CHILD_THREAD,true);
+            }
+            continue;
+        } else {
+            if (playstatus->load) {
+                playstatus->load = false;
+                callJava->onCallLoad(CHILD_THREAD, false);
+            }
+        }
+
         avPacket = av_packet_alloc();
         if (queue->getAvpacket(avPacket) != 0) {
             av_packet_free(&avPacket);

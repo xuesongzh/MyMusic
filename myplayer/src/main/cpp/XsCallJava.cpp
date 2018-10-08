@@ -19,6 +19,7 @@ XsCallJava::XsCallJava(JavaVM *javaVM, JNIEnv *env, jobject obj) {
     }
 
     jmid_prepared = jniEnv->GetMethodID(clz, "onCallPrepared", "()V");
+    jmid_load = jniEnv->GetMethodID(clz, "onCallLoad", "(Z)V");
 }
 
 void XsCallJava::onCallPrepared(int type) {
@@ -34,6 +35,23 @@ void XsCallJava::onCallPrepared(int type) {
             return;
         }
         jniEnv->CallVoidMethod(jobj, jmid_prepared);
+        javaVM->DetachCurrentThread();
+    }
+}
+
+void XsCallJava::onCallLoad(int type, bool load) {
+
+    if (type == MAIN_THREAD) {
+        jniEnv->CallVoidMethod(jobj, jmid_load, load);
+    } else if (type == CHILD_THREAD) {
+        JNIEnv *jniEnv;
+        if (javaVM->AttachCurrentThread(&jniEnv, 0) != JNI_OK) {
+            if (LOG_DEBUG) {
+                LOGE("get child thread jniEnv wrong");
+            }
+            return;
+        }
+        jniEnv->CallVoidMethod(jobj, jmid_load, load);
         javaVM->DetachCurrentThread();
     }
 }

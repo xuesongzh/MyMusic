@@ -20,8 +20,7 @@ int XsQueue::putAvpacket(AVPacket *packet) {
     pthread_mutex_lock(&mutexPacket);
     //入队
     queuePacket.push(packet);
-    if(LOG_DEBUG)
-    {
+    if(LOG_DEBUG) {
         LOGD("放入一个AVpacket到队列里面，个数为：%d", queuePacket.size());
     }
     //发送消息给消费者

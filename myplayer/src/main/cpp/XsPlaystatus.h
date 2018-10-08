@@ -10,6 +10,7 @@ class XsPlaystatus {
 
 public:
     bool exit;
+    bool load;
 
 public:
     XsPlaystatus();

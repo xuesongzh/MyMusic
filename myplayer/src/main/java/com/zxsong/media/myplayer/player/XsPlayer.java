@@ -4,9 +4,12 @@ package com.zxsong.media.myplayer.player;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
 
 public class XsPlayer {
+
+    private static final String TAG = "XsPlayer";
 
     static {
         System.loadLibrary("native-lib");
@@ -20,12 +23,11 @@ public class XsPlayer {
         System.loadLibrary("avdevice-57");
     }
 
-    private static final String TAG = "XsPlayer";
-
     //数据源
     private String source;
 
     private OnPreparedListener mOnPreparedListener;
+    private OnLoadListener mOnLoadListener;
 
     public XsPlayer() {
 
@@ -47,12 +49,17 @@ public class XsPlayer {
         this.mOnPreparedListener = onPreparedListener;
     }
 
+    public void setOnLoadListener(OnLoadListener onLoadListener) {
+        this.mOnLoadListener = onLoadListener;
+    }
+
     public void prepared() {
         if (TextUtils.isEmpty(source)) {
             Log.d(TAG, "source is empty !");
             return;
         }
 
+        onCallLoad(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -81,6 +88,12 @@ public class XsPlayer {
     public void onCallPrepared() {
         if (mOnPreparedListener != null) {
             mOnPreparedListener.onPrepared();
+        }
+    }
+
+    public void onCallLoad(boolean load) {
+        if (mOnLoadListener != null) {
+            mOnLoadListener.onLoad(load);
         }
     }
 

@@ -9,9 +9,9 @@ extern "C"
 }
 
 JavaVM *javaVM = NULL;
-XsFFmpeg *fFmpeg = NULL;
+XsFFmpeg *ffmpeg = NULL;
 XsCallJava *callJava = NULL;
-XsPlaystatus *playstatus = NULL;
+XsPlaystatus *playStatus = NULL;
 
 extern "C"
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
@@ -30,20 +30,20 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1prepared(JNIEnv *env, jobject 
                                                            jstring source_) {
     const char *source = env->GetStringUTFChars(source_, 0);
 
-    if (fFmpeg == NULL) {
+    if (ffmpeg == NULL) {
         if (callJava == NULL) {
             callJava = new XsCallJava(javaVM, env, instance);
         }
-        playstatus = new XsPlaystatus();
-        fFmpeg = new XsFFmpeg(playstatus, callJava, source);
-        fFmpeg->parpared();
+        playStatus = new XsPlaystatus();
+        ffmpeg = new XsFFmpeg(playStatus, callJava, source);
+        ffmpeg->parpared();
     }
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_zxsong_media_myplayer_player_XsPlayer_n_1start(JNIEnv *env, jobject instance) {
 
-    if (fFmpeg != NULL) {
-        fFmpeg->start();
+    if (ffmpeg != NULL) {
+        ffmpeg->start();
     }
 }

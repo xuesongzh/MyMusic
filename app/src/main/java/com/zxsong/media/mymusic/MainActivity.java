@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.zxsong.media.mymusic.utils.PermissionUtils;
+import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
 import com.zxsong.media.myplayer.player.XsPlayer;
 
@@ -40,6 +41,17 @@ public class MainActivity extends AppCompatActivity {
             public void onPrepared() {
                 Log.d(TAG, "准备好了，可以开始播放声音了");
                 mXsPlayer.start();
+            }
+        });
+
+        mXsPlayer.setOnLoadListener(new OnLoadListener() {
+            @Override
+            public void onLoad(boolean isLoad) {
+                if (isLoad) {
+                    Log.d(TAG, "加载中....");
+                } else {
+                    Log.d(TAG, "播放中....");
+                }
             }
         });
 

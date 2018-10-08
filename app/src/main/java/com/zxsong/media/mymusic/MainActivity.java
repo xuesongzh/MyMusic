@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.zxsong.media.mymusic.utils.PermissionUtils;
 import com.zxsong.media.myplayer.listener.OnLoadListener;
+import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
 import com.zxsong.media.myplayer.player.XsPlayer;
 
@@ -55,11 +56,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mXsPlayer.setOnPauseResumeListener(new OnPauseResumeListener() {
+            @Override
+            public void onPause(boolean isPause) {
+                if (isPause) {
+                    Log.d(TAG, "暂停中....");
+                } else {
+                    Log.d(TAG, "播放中....");
+                }
+            }
+        });
     }
 
     public void begin(View view) {
         mXsPlayer.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
         mXsPlayer.prepared();
+    }
+
+    public void pause(View view) {
+        mXsPlayer.pause();
+    }
+
+    public void resume(View view) {
+        mXsPlayer.resume();
     }
 
     @Override

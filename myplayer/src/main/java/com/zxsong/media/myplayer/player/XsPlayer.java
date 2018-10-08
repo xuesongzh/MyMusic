@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.zxsong.media.myplayer.listener.OnLoadListener;
+import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
 
 public class XsPlayer {
@@ -28,6 +29,7 @@ public class XsPlayer {
 
     private OnPreparedListener mOnPreparedListener;
     private OnLoadListener mOnLoadListener;
+    private OnPauseResumeListener mOnPauseResumeListener;
 
     public XsPlayer() {
 
@@ -51,6 +53,10 @@ public class XsPlayer {
 
     public void setOnLoadListener(OnLoadListener onLoadListener) {
         this.mOnLoadListener = onLoadListener;
+    }
+
+    public void setOnPauseResumeListener(OnPauseResumeListener onPauseResumeListener) {
+        this.mOnPauseResumeListener = onPauseResumeListener;
     }
 
     public void prepared() {
@@ -82,6 +88,19 @@ public class XsPlayer {
         }).start();
     }
 
+    public void pause() {
+        n_pause();
+        if (mOnPauseResumeListener != null) {
+            mOnPauseResumeListener.onPause(true);
+        }
+    }
+
+    public void resume() {
+        n_resume();
+        if (mOnPauseResumeListener != null) {
+            mOnPauseResumeListener.onPause(false);
+        }
+    }
     /**
      * c++回调java的方法
      */
@@ -97,7 +116,9 @@ public class XsPlayer {
         }
     }
 
-    public native void n_prepared(String source);
-    public native void n_start();
+    private native void n_prepared(String source);
+    private native void n_start();
+    private native void n_pause();
+    private native void n_resume();
 
 }

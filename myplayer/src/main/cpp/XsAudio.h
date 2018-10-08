@@ -60,6 +60,10 @@ public:
     void initOpenSLES();
 
     int getSampleRateForOpenSLES(int sample_rate);
+
+    void pause();
+
+    void resume();
 };
 
 

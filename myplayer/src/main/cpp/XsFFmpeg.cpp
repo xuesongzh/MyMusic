@@ -141,3 +141,15 @@ void XsFFmpeg::start() {
         LOGD("解码完成");
     }
 }
+
+void XsFFmpeg::pause() {
+    if (audio != NULL) {
+        audio->pause();
+    }
+}
+
+void XsFFmpeg::resume() {
+    if (audio != NULL) {
+        audio->resume();
+    }
+}

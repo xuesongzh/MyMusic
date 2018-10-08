@@ -47,3 +47,19 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1start(JNIEnv *env, jobject ins
         ffmpeg->start();
     }
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_zxsong_media_myplayer_player_XsPlayer_n_1pause(JNIEnv *env, jobject instance) {
+
+    if (ffmpeg != NULL) {
+        ffmpeg->pause();
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_zxsong_media_myplayer_player_XsPlayer_n_1resume(JNIEnv *env, jobject instance) {
+
+    if (ffmpeg != NULL) {
+        ffmpeg->resume();
+    }
+}

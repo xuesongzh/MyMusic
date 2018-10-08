@@ -37,7 +37,7 @@ int XsAudio::resampleAudio() {
         if (queue->getQueueSize() == 0) {//加载中
             if (!playstatus->load) {
                 playstatus->load = true;
-                callJava->onCallLoad(CHILD_THREAD,true);
+                callJava->onCallLoad(CHILD_THREAD, true);
             }
             continue;
         } else {
@@ -254,9 +254,21 @@ int XsAudio::getSampleRateForOpenSLES(int sample_rate) {
             rate = SL_SAMPLINGRATE_192;
             break;
         default:
-            rate =  SL_SAMPLINGRATE_44_1;
+            rate = SL_SAMPLINGRATE_44_1;
     }
     return rate;
+}
+
+void XsAudio::pause() {
+    if (pcmPlayerPlay != NULL) {
+        (*pcmPlayerPlay)->SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_PAUSED);
+    }
+}
+
+void XsAudio::resume() {
+    if (pcmPlayerPlay != NULL) {
+        (*pcmPlayerPlay)->SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_PLAYING);
+    }
 }
 
 

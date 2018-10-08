@@ -13,4 +13,16 @@ tools:context="com.zxsong.media.mymusic.MainActivity">
         android:text="@string/start"
         android:onClick="begin"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pause"
+        android:onClick="pause"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/play"
+        android:onClick="resume"/>
+
 </LinearLayout>

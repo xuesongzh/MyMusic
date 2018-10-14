@@ -2,20 +2,27 @@ package com.zxsong.media.mymusic;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zxsong.media.mymusic.utils.PermissionUtils;
+import com.zxsong.media.mymusic.utils.TimeUtils;
+import com.zxsong.media.myplayer.bean.TimeInfoBean;
 import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
+import com.zxsong.media.myplayer.listener.OnTimeInfoListener;
 import com.zxsong.media.myplayer.player.XsPlayer;
 
 public class MainActivity extends AppCompatActivity {
 
     private XsPlayer mXsPlayer;
+    private TextView mTextView;
 
     private static final String TAG = "MainActivity";
     @Override
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+        mTextView = findViewById(R.id.tv_time);
         mXsPlayer = new XsPlayer();
         mXsPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
@@ -66,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mXsPlayer.setOnTimeInfoListener(new OnTimeInfoListener() {
+            @Override
+            public void onTimeInfo(TimeInfoBean timeInfoBean) {
+//                Log.d(TAG,timeInfoBean.toString());
+                Message message = Message.obtain();
+                message.what = 1;
+                message.obj = timeInfoBean;
+                mHandler.sendMessage(message);
+            }
+        });
     }
 
     public void begin(View view) {
@@ -80,6 +99,18 @@ public class MainActivity extends AppCompatActivity {
     public void resume(View view) {
         mXsPlayer.resume();
     }
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                TimeInfoBean timeInfoBean = (TimeInfoBean) msg.obj;
+                mTextView.setText(TimeUtils.getStringTime(timeInfoBean.getCurrentTime())
+                        + "/" + TimeUtils.getStringTime(timeInfoBean.getTotalTime()));
+            }
+        }
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

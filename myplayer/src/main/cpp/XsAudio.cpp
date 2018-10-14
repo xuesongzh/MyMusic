@@ -115,6 +115,14 @@ int XsAudio::resampleAudio() {
 
 //            fwrite(buffer, 1, data_size, outFile);
 
+            //当前AVframe时间
+            now_time = avFrame->pts * av_q2d(time_base);
+            LOGD("当前AVframe时间: %f",now_time);
+            if(now_time < play_time) {
+                now_time = play_time;
+            }
+            play_time = now_time;
+
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
@@ -144,6 +152,13 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void *context) {
     if (xsAudio != NULL) {
         int bufferSize = xsAudio->resampleAudio();
         if (bufferSize > 0) {
+            xsAudio->play_time += bufferSize/((double)(xsAudio->sample_rate*2*2));
+            if (xsAudio->play_time - xsAudio->last_time >= 0.1) {//每秒回调10次
+                xsAudio->last_time = xsAudio->play_time;
+                xsAudio->callJava->onCallTimeInfo(CHILD_THREAD, xsAudio->play_time,
+                                                  xsAudio->duration);
+            }
+
             (*xsAudio->pcmBufferQueue)->Enqueue(xsAudio->pcmBufferQueue, (char *) xsAudio->buffer,
                                                 bufferSize);
         }

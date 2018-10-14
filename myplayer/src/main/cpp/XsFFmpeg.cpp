@@ -48,6 +48,8 @@ void XsFFmpeg::decodeFFmpegThread() {
                 audio = new XsAudio(playstatus,pFormatCtx->streams[i]->codecpar->sample_rate,callJava);
                 audio->streamIndex = i;
                 audio->avCodecPar = pFormatCtx->streams[i]->codecpar;
+                audio->duration = (int) (pFormatCtx->duration / AV_TIME_BASE);
+                audio->time_base = pFormatCtx->streams[i]->time_base;
             }
         }
     }

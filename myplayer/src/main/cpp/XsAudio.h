@@ -34,6 +34,12 @@ public:
     int data_size = 0;
     int sample_rate = 0;
 
+    int duration = 0;
+    AVRational time_base;
+    double play_time;//总的播放时长
+    double now_time;//当前frame时间
+    double last_time;//上一次调用时间
+
     // 引擎接口
     SLObjectItf engineObject = NULL;
     SLEngineItf engineEngine = NULL;

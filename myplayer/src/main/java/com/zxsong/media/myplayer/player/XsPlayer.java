@@ -109,6 +109,15 @@ public class XsPlayer {
             mOnPauseResumeListener.onPause(false);
         }
     }
+
+    public void stop() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                n_stop();
+            }
+        }).start();
+    }
     /**
      * c++回调java的方法
      */
@@ -139,4 +148,5 @@ public class XsPlayer {
     private native void n_start();
     private native void n_pause();
     private native void n_resume();
+    private native void n_stop();
 }

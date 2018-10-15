@@ -13,6 +13,7 @@
 extern "C"
 {
 #include <libavformat/avformat.h>
+#include <libavutil/time.h>
 };
 
 class XsFFmpeg {
@@ -24,6 +25,8 @@ public:
     AVFormatContext *pFormatCtx = NULL;
     XsAudio *audio = NULL;
     XsPlaystatus *playstatus = NULL;
+    pthread_mutex_t init_mutex;
+    bool exit = false;
 
 public:
     XsFFmpeg(XsPlaystatus *playstatus, XsCallJava *callJava, const char *url);
@@ -36,6 +39,8 @@ public:
     void pause();
 
     void resume();
+
+    void release();
 };
 
 

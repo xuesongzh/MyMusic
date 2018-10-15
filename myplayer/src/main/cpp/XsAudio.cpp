@@ -117,8 +117,8 @@ int XsAudio::resampleAudio() {
 
             //当前AVframe时间
             now_time = avFrame->pts * av_q2d(time_base);
-            LOGD("当前AVframe时间: %f",now_time);
-            if(now_time < play_time) {
+            LOGD("当前AVframe时间: %f", now_time);
+            if (now_time < play_time) {
                 now_time = play_time;
             }
             play_time = now_time;
@@ -152,7 +152,7 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void *context) {
     if (xsAudio != NULL) {
         int bufferSize = xsAudio->resampleAudio();
         if (bufferSize > 0) {
-            xsAudio->play_time += bufferSize/((double)(xsAudio->sample_rate*2*2));
+            xsAudio->play_time += bufferSize / ((double) (xsAudio->sample_rate * 2 * 2));
             if (xsAudio->play_time - xsAudio->last_time >= 0.1) {//每秒回调10次
                 xsAudio->last_time = xsAudio->play_time;
                 xsAudio->callJava->onCallTimeInfo(CHILD_THREAD, xsAudio->play_time,
@@ -283,6 +283,60 @@ void XsAudio::pause() {
 void XsAudio::resume() {
     if (pcmPlayerPlay != NULL) {
         (*pcmPlayerPlay)->SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_PLAYING);
+    }
+}
+
+void XsAudio::stop() {
+    if (pcmPlayerPlay != NULL) {
+        (*pcmPlayerPlay)->SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_STOPPED);
+    }
+}
+
+void XsAudio::release() {
+
+    //释放队列
+    if (queue != NULL) {
+        delete (queue);
+        queue = NULL;
+    }
+
+    //释放OpenSL
+    if (pcmPlayerObject != NULL) {
+        (*pcmPlayerObject)->Destroy(pcmPlayerObject);
+        pcmPlayerObject = NULL;
+        pcmPlayerPlay = NULL;
+        pcmBufferQueue = NULL;
+    }
+
+    if (outputMixObject != NULL) {
+        (*outputMixObject)->Destroy(outputMixObject);
+        outputMixObject = NULL;
+        outputMixEnvironmentalReverb = NULL;
+    }
+
+    if (engineObject != NULL) {
+        (*engineObject)->Destroy(engineObject);
+        engineObject = NULL;
+        engineEngine = NULL;
+    }
+
+    if (buffer != NULL) {
+        free(buffer);
+        buffer = NULL;
+    }
+
+    if (avCodecCtx != NULL) {
+        avcodec_close(avCodecCtx);
+        avcodec_free_context(&avCodecCtx);
+        avCodecCtx = NULL;
+    }
+
+    if (playstatus != NULL) {
+        playstatus = NULL;
+    }
+
+    if (callJava != NULL) {
+        callJava = NULL;
     }
 }
 

@@ -8,3 +8,7 @@ XsPlaystatus::XsPlaystatus() {
     exit = false;
     load = true;
 }
+
+XsPlaystatus::~XsPlaystatus() {
+
+}

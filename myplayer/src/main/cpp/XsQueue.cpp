@@ -11,8 +11,7 @@ XsQueue::XsQueue(XsPlaystatus *playstatus) {
 }
 
 XsQueue::~XsQueue() {
-
-
+    clearAvpacket();
 }
 
 int XsQueue::putAvpacket(AVPacket *packet) {
@@ -63,3 +62,19 @@ int XsQueue::getQueueSize() {
     pthread_mutex_unlock(&mutexPacket);
     return size;
 }
+
+void XsQueue::clearAvpacket() {
+    pthread_cond_signal(&condPacket);
+    pthread_mutex_unlock(&mutexPacket);
+
+    while (!queuePacket.empty()) {
+        AVPacket *packet = queuePacket.front();
+        queuePacket.pop();
+        av_packet_free(&packet);
+        av_free(packet);
+        packet = NULL;
+    }
+    pthread_mutex_unlock(&mutexPacket);
+}
+
+

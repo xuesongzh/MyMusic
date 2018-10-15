@@ -24,6 +24,11 @@ tools:context="com.zxsong.media.mymusic.MainActivity">
         android:layout_height="wrap_content"
         android:text="@string/play"
         android:onClick="resume"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/stop"
+        android:onClick="stop"/>
 
     <TextView
         android:id="@+id/tv_time"

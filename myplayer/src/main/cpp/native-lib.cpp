@@ -18,7 +18,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 
     JNIEnv *env;
     javaVM = jvm;
-    if(jvm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
+    if (jvm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
         return -1;
     }
     return JNI_VERSION_1_6;
@@ -61,5 +61,25 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1resume(JNIEnv *env, jobject in
 
     if (ffmpeg != NULL) {
         ffmpeg->resume();
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject instance) {
+
+    if (ffmpeg != NULL) {
+        ffmpeg->release();
+        delete (ffmpeg);
+        ffmpeg = NULL;
+    }
+
+    if (callJava != NULL) {
+        delete (callJava);
+        callJava = NULL;
+    }
+
+    if (playStatus != NULL) {
+        delete (playStatus);
+        playStatus = NULL;
     }
 }

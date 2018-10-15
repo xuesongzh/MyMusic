@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void begin(View view) {
         mXsPlayer.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
+//        mXsPlayer.setSource("http://ngcdn004.cnr.cn/live/dszs/index.m3u8");
         mXsPlayer.prepared();
     }
 
@@ -98,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void resume(View view) {
         mXsPlayer.resume();
+    }
+
+    public void stop(View view) {
+        mXsPlayer.stop();
     }
 
     Handler mHandler = new Handler() {

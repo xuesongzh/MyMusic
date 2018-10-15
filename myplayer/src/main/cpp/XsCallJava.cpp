@@ -72,3 +72,7 @@ void XsCallJava::onCallTimeInfo(int type, int cur, int total) {
         javaVM->DetachCurrentThread();
     }
 }
+
+XsCallJava::~XsCallJava() {
+
+}

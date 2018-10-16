@@ -123,6 +123,10 @@ public class XsPlayer {
             }
         }).start();
     }
+
+    public void seek(int seconds) {
+        n_seek(seconds);
+    }
     /**
      * c++回调java的方法
      */
@@ -160,4 +164,5 @@ public class XsPlayer {
     private native void n_pause();
     private native void n_resume();
     private native void n_stop();
+    private native void n_seek(int seconds);
 }

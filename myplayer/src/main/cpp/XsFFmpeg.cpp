@@ -11,6 +11,7 @@ XsFFmpeg::XsFFmpeg(XsPlaystatus *playstatus, XsCallJava *callJava, const char *u
     this->callJava = callJava;
     this->url = url;
     pthread_mutex_init(&init_mutex, NULL);
+    pthread_mutex_init(&seek_mutex, NULL);
 }
 
 void *decodeFFmpeg(void *data) {
@@ -75,6 +76,7 @@ void XsFFmpeg::decodeFFmpegThread() {
                 audio->avCodecPar = pFormatCtx->streams[i]->codecpar;
                 audio->duration = (int) (pFormatCtx->duration / AV_TIME_BASE);
                 audio->time_base = pFormatCtx->streams[i]->time_base;
+                duration = audio->duration;
             }
         }
     }
@@ -139,8 +141,22 @@ void XsFFmpeg::start() {
     //8、读取音频帧
     int count = 0;
     while (playstatus != NULL && !playstatus->exit) {
+        if (playstatus->seek) {
+            continue;
+        }
+
+        //设置队列的大小
+        if (audio->queue->getQueueSize() > 40) {
+            continue;
+        }
+
         AVPacket *avPacket = av_packet_alloc();
-        if (av_read_frame(pFormatCtx, avPacket) == 0) {
+
+        pthread_mutex_lock(&seek_mutex);
+        int ret = av_read_frame(pFormatCtx, avPacket);
+        pthread_mutex_unlock(&seek_mutex);
+
+        if (ret == 0) {
             if (avPacket->stream_index == audio->streamIndex) {
                 count++;
                 if (LOG_DEBUG) {
@@ -249,4 +265,27 @@ void XsFFmpeg::release() {
 
 XsFFmpeg::~XsFFmpeg() {
     pthread_mutex_destroy(&init_mutex);
+    pthread_mutex_destroy(&seek_mutex);
+}
+
+void XsFFmpeg::seek(int64_t seconds) {
+
+    if (duration <= 0) {
+        return;
+    }
+
+    if (seconds >= 0 && seconds <= duration) {
+        if (audio != NULL) {
+            playstatus->seek = true;
+            audio->queue->clearAvpacket();
+            audio->play_time = 0;
+            audio->last_time = 0;
+
+            pthread_mutex_lock(&seek_mutex);
+            int64_t pos = seconds * AV_TIME_BASE;
+            avformat_seek_file(pFormatCtx, -1, INT64_MIN, pos, INT64_MAX, 0);
+            pthread_mutex_unlock(&seek_mutex);
+            playstatus->seek = false;
+        }
+    }
 }

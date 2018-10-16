@@ -92,3 +92,13 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject inst
     }
     stopped = false;
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_zxsong_media_myplayer_player_XsPlayer_n_1seek(JNIEnv *env, jobject instance,
+                                                       jint seconds) {
+    if (ffmpeg != NULL) {
+        ffmpeg->seek(seconds);
+    }
+
+}

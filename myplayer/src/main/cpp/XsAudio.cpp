@@ -290,9 +290,13 @@ void XsAudio::stop() {
     if (pcmPlayerPlay != NULL) {
         (*pcmPlayerPlay)->SetPlayState(pcmPlayerPlay, SL_PLAYSTATE_STOPPED);
     }
+    play_time = 0;
+    last_time = 0;
 }
 
 void XsAudio::release() {
+
+    stop();
 
     //释放队列
     if (queue != NULL) {

@@ -113,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
         mXsPlayer.stop();
     }
 
+    public void seek(View view) {
+        mXsPlayer.seek(100);
+    }
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

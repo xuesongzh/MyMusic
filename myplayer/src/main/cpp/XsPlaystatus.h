@@ -6,11 +6,14 @@
 #define MYMUSIC_XSPLAYSTATUS_H
 
 
+#include <string.h>
+
 class XsPlaystatus {
 
 public:
     bool exit;
     bool load;
+    bool seek;
 
 public:
     XsPlaystatus();

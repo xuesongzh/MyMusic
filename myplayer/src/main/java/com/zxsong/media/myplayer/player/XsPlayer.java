@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.zxsong.media.myplayer.bean.TimeInfoBean;
+import com.zxsong.media.myplayer.listener.OnErrorListener;
 import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
@@ -34,6 +35,7 @@ public class XsPlayer {
     private OnLoadListener mOnLoadListener;
     private OnPauseResumeListener mOnPauseResumeListener;
     private OnTimeInfoListener mOnTimeInfoListener;
+    private OnErrorListener mOnErrorListener;
 
     public XsPlayer() {
 
@@ -67,13 +69,16 @@ public class XsPlayer {
         mOnTimeInfoListener = onTimeInfoListener;
     }
 
+    public void setOnErrorListener(OnErrorListener onErrorListener) {
+        mOnErrorListener = onErrorListener;
+    }
+
     public void prepared() {
         if (TextUtils.isEmpty(source)) {
             Log.d(TAG, "source is empty !");
             return;
         }
 
-        onCallLoad(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -141,6 +146,12 @@ public class XsPlayer {
             sTimeInfoBean.setCurrentTime(currentTime);
             sTimeInfoBean.setTotalTime(totalTime);
             mOnTimeInfoListener.onTimeInfo(sTimeInfoBean);
+        }
+    }
+
+    public void onCallError(int code, String msg) {
+        if (mOnErrorListener != null) {
+            mOnErrorListener.onError(code, msg);
         }
     }
 

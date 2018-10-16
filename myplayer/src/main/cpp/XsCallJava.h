@@ -22,6 +22,7 @@ public:
     jmethodID jmid_prepared;
     jmethodID jmid_load;
     jmethodID jmid_timeinfo;
+    jmethodID jmid_error;
 
 public:
     XsCallJava(JavaVM *javaVM, JNIEnv *env, jobject obj);
@@ -32,6 +33,8 @@ public:
     void onCallLoad(int type, bool load);
 
     void onCallTimeInfo(int type, int cur, int total);
+
+    void onCallError(int type, int code, char *msg);
 };
 
 

@@ -13,6 +13,8 @@ XsFFmpeg *ffmpeg = NULL;
 XsCallJava *callJava = NULL;
 XsPlaystatus *playStatus = NULL;
 
+bool stopped = false;//防止多次release
+
 extern "C"
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 
@@ -34,6 +36,7 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1prepared(JNIEnv *env, jobject 
         if (callJava == NULL) {
             callJava = new XsCallJava(javaVM, env, instance);
         }
+        callJava->onCallLoad(MAIN_THREAD, true);
         playStatus = new XsPlaystatus();
         ffmpeg = new XsFFmpeg(playStatus, callJava, source);
         ffmpeg->parpared();
@@ -67,6 +70,11 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject instance) {
 
+    if (stopped) {
+        return;
+    }
+
+    stopped = true;
     if (ffmpeg != NULL) {
         ffmpeg->release();
         delete (ffmpeg);
@@ -82,4 +90,5 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject inst
         delete (playStatus);
         playStatus = NULL;
     }
+    stopped = false;
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.zxsong.media.mymusic.utils.PermissionUtils;
 import com.zxsong.media.mymusic.utils.TimeUtils;
 import com.zxsong.media.myplayer.bean.TimeInfoBean;
+import com.zxsong.media.myplayer.listener.OnErrorListener;
 import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
@@ -83,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
                 message.what = 1;
                 message.obj = timeInfoBean;
                 mHandler.sendMessage(message);
+            }
+        });
+
+        mXsPlayer.setOnErrorListener(new OnErrorListener() {
+            @Override
+            public void onError(int code, String msg) {
+                Log.d(TAG, "code = " + code + " msg = " + msg);
             }
         });
     }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.zxsong.media.mymusic.utils.PermissionUtils;
 import com.zxsong.media.mymusic.utils.TimeUtils;
 import com.zxsong.media.myplayer.bean.TimeInfoBean;
+import com.zxsong.media.myplayer.listener.OnCompleteListener;
 import com.zxsong.media.myplayer.listener.OnErrorListener;
 import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
@@ -93,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "code = " + code + " msg = " + msg);
             }
         });
+
+        mXsPlayer.setOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "播放完成了");
+            }
+        });
     }
 
     public void begin(View view) {
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seek(View view) {
-        mXsPlayer.seek(100);
+        mXsPlayer.seek(215);
     }
 
     Handler mHandler = new Handler() {

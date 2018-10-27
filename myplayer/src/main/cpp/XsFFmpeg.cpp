@@ -194,6 +194,10 @@ void XsFFmpeg::start() {
 //        av_free(avPacket);
 //        avPacket = NULL;
 //    }
+
+    if (callJava != NULL) {
+        callJava->onCallComplete(CHILD_THREAD);
+    }
     exit = true;
     if (LOG_DEBUG) {
         LOGD("解码完成");
@@ -213,10 +217,6 @@ void XsFFmpeg::resume() {
 }
 
 void XsFFmpeg::release() {
-
-    if (playstatus->exit) {
-        return;
-    }
 
     if (LOG_DEBUG) {
         LOGE("开始释放Ffmpeg");

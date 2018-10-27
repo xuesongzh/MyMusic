@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.zxsong.media.myplayer.bean.TimeInfoBean;
+import com.zxsong.media.myplayer.listener.OnCompleteListener;
 import com.zxsong.media.myplayer.listener.OnErrorListener;
 import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
@@ -36,6 +37,7 @@ public class XsPlayer {
     private OnPauseResumeListener mOnPauseResumeListener;
     private OnTimeInfoListener mOnTimeInfoListener;
     private OnErrorListener mOnErrorListener;
+    private OnCompleteListener mOnCompleteListener;
 
     public XsPlayer() {
 
@@ -71,6 +73,10 @@ public class XsPlayer {
 
     public void setOnErrorListener(OnErrorListener onErrorListener) {
         mOnErrorListener = onErrorListener;
+    }
+
+    public void setOnCompleteListener(OnCompleteListener onCompleteListener) {
+        mOnCompleteListener = onCompleteListener;
     }
 
     public void prepared() {
@@ -155,7 +161,15 @@ public class XsPlayer {
 
     public void onCallError(int code, String msg) {
         if (mOnErrorListener != null) {
+            stop();
             mOnErrorListener.onError(code, msg);
+        }
+    }
+
+    public void onCallComplete() {
+        if (mOnCompleteListener != null) {
+            stop();
+            mOnCompleteListener.onComplete();
         }
     }
 
@@ -165,4 +179,5 @@ public class XsPlayer {
     private native void n_resume();
     private native void n_stop();
     private native void n_seek(int seconds);
+
 }

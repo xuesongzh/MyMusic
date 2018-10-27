@@ -12,6 +12,7 @@ JavaVM *javaVM = NULL;
 XsFFmpeg *ffmpeg = NULL;
 XsCallJava *callJava = NULL;
 XsPlaystatus *playStatus = NULL;
+pthread_t startThread;
 
 bool stopped = false;//防止多次release
 
@@ -42,12 +43,19 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1prepared(JNIEnv *env, jobject 
         ffmpeg->parpared();
     }
 }
+
+void *startCallback(void *data) {
+    XsFFmpeg *fFmpeg = (XsFFmpeg *) data;
+    ffmpeg->start();
+    pthread_exit(&startThread);
+}
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_zxsong_media_myplayer_player_XsPlayer_n_1start(JNIEnv *env, jobject instance) {
 
     if (ffmpeg != NULL) {
-        ffmpeg->start();
+        pthread_create(&startThread, NULL, startCallback, ffmpeg);
     }
 }
 extern "C"

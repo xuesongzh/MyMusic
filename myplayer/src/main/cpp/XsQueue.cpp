@@ -19,9 +19,9 @@ int XsQueue::putAvpacket(AVPacket *packet) {
     pthread_mutex_lock(&mutexPacket);
     //入队
     queuePacket.push(packet);
-    if(LOG_DEBUG) {
+    /*if(LOG_DEBUG) {
         LOGD("放入一个AVpacket到队列里面，个数为：%d", queuePacket.size());
-    }
+    }*/
     //发送消息给消费者
     pthread_cond_signal(&condPacket);
     //解锁
@@ -42,9 +42,9 @@ int XsQueue::getAvpacket(AVPacket *packet) {
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
-            if(LOG_DEBUG) {
+            /*if(LOG_DEBUG) {
                 LOGD("从队列里面取出一个AVpacket，还剩下 %d 个", queuePacket.size());
-            }
+            }*/
             break;
         } else {
             pthread_cond_wait(&condPacket, &mutexPacket);

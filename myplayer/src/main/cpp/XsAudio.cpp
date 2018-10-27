@@ -109,15 +109,15 @@ int XsAudio::resampleAudio() {
             int out_channels = av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO);
             data_size = nb * out_channels * av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
 
-            if (LOG_DEBUG) {
+            /*if (LOG_DEBUG) {
                 LOGD("每帧的大小：%d", data_size);
-            }
+            }*/
 
 //            fwrite(buffer, 1, data_size, outFile);
 
             //当前AVframe时间
             now_time = avFrame->pts * av_q2d(time_base);
-            LOGD("当前AVframe时间: %f", now_time);
+//            LOGD("当前AVframe时间: %f", now_time);
             if (now_time < play_time) {
                 now_time = play_time;
             }

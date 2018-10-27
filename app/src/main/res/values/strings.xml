@@ -5,4 +5,5 @@
     <string name="play">播放</string>
     <string name="stop">停止</string>
     <string name="seek">Seek</string>
+    <string name="next">next</string>
 </resources>

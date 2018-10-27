@@ -125,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
         mXsPlayer.seek(215);
     }
 
+    public void next(View view) {
+        mXsPlayer.playNext("http://ngcdn004.cnr.cn/live/dszs/index.m3u8");
+    }
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

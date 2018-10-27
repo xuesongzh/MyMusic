@@ -34,6 +34,11 @@ tools:context="com.zxsong.media.mymusic.MainActivity">
         android:layout_height="wrap_content"
         android:text="@string/seek"
         android:onClick="seek"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        android:onClick="next"/>
 
     <TextView
         android:id="@+id/tv_time"

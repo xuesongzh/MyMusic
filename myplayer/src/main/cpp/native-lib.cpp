@@ -82,6 +82,9 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject inst
         return;
     }
 
+    jclass clz = env->GetObjectClass(instance);
+    jmethodID jmid_next = env->GetMethodID(clz, "onCallNext", "()V");
+
     stopped = true;
     if (ffmpeg != NULL) {
         ffmpeg->release();
@@ -99,6 +102,8 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject inst
         playStatus = NULL;
     }
     stopped = false;
+
+    env->CallVoidMethod(instance, jmid_next);
 }
 
 extern "C"

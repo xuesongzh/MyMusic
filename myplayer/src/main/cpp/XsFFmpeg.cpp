@@ -159,9 +159,9 @@ void XsFFmpeg::start() {
         if (ret == 0) {
             if (avPacket->stream_index == audio->streamIndex) {
                 count++;
-                if (LOG_DEBUG) {
+               /* if (LOG_DEBUG) {
                     LOGE("解码第 %d 帧", count);
-                }
+                }*/
                 audio->queue->putAvpacket(avPacket);
             } else {
                 av_packet_free(&avPacket);

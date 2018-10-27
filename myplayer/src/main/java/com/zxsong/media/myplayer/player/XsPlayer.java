@@ -31,6 +31,7 @@ public class XsPlayer {
     //数据源
     private String source;
     private static TimeInfoBean sTimeInfoBean;
+    private boolean playNext = false;
 
     private OnPreparedListener mOnPreparedListener;
     private OnLoadListener mOnLoadListener;
@@ -133,6 +134,12 @@ public class XsPlayer {
     public void seek(int seconds) {
         n_seek(seconds);
     }
+
+    public void playNext(String url) {
+        source = url;
+        playNext = true;
+        stop();
+    }
     /**
      * c++回调java的方法
      */
@@ -170,6 +177,13 @@ public class XsPlayer {
         if (mOnCompleteListener != null) {
             stop();
             mOnCompleteListener.onComplete();
+        }
+    }
+
+    public void onCallNext() {
+        if (playNext) {
+            playNext = false;
+            prepared();
         }
     }
 

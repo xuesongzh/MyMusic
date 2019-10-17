@@ -2,8 +2,6 @@
 // Created by zxsong on 2018/9/19.
 //
 
-
-
 #include "XsFFmpeg.h"
 
 XsFFmpeg::XsFFmpeg(XsPlaystatus *playstatus, XsCallJava *callJava, const char *url) {
@@ -21,6 +19,12 @@ void *decodeFFmpeg(void *data) {
 }
 
 void XsFFmpeg::parpared() {
+    /* pthread_creat :
+    用于创建一个实际的线程如：pthread_create(&pthread,NULL,threadCallBack,NULL);
+    其总共接收4个参数，第一个参数为pthread_t对象
+    第二个参数为线程的一些属性我们一般传NULL就行
+    第三个参数为线程执行的函数（ void* threadCallBack(void *data) ）
+    第四个参数是传递给线程的参数，是void*类型的，可以传任意类型*/
     pthread_create(&decodeThread, NULL, decodeFFmpeg, this);
 }
 

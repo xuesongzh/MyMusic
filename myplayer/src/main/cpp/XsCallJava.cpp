@@ -4,6 +4,22 @@
 
 #include "XsCallJava.h"
 
+/**
+ * C++主线程调用Java方法
+ * 1、根据jobject获取jclass（静态方法就不用这一步了）如：jclass clz = env->GetObjectClass(jobj);
+ * 2、获取jmethodid 如： jmethodid jmid = env->GetMethodID(clz, "onError", "(ILjava/lang/String;)V")；
+ * 3、调用方法 如： jenv->CallVoidMethod(jobj, jmid, code, jmsg); 
+ *
+ * C++子线程调用Java方法
+ * 由于JNIEnv是线程相关的，所以子线程中不能使用创建线程的JNIEnv；
+ * 而JVM是进程相关的，所以可以通过JVM来获取当前线程的JNIEnv，然后就可以调用Java的方法了
+ * 1、获取JVM对象： JNI_OnLoad(JavaVM* vm,void* reserved)
+ * 2、通过JVM获取JNIEnv：JNIEnv *env;
+ * jvm->AttachCurrentThread(&env, 0);
+ * jvm->DetachCurrentThread();
+ */
+
+
 XsCallJava::XsCallJava(JavaVM *javaVM, JNIEnv *env, jobject obj) {
 
     this->javaVM = javaVM;

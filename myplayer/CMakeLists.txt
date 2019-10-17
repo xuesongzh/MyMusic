@@ -1,6 +1,7 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+# 导入include路径
 include_directories(src/main/cpp/include)
 
 add_library( # Sets the name of the library.
@@ -14,8 +15,9 @@ add_library( # Sets the name of the library.
              src/main/cpp/XsCallJava.cpp
              src/main/cpp/XsFFmpeg.cpp
              src/main/cpp/native-lib.cpp )
-
+# 添加动态库
 add_library( avcodec-57 SHARED IMPORTED)
+# 设置动态库路径
 set_target_properties( avcodec-57
                        PROPERTIES IMPORTED_LOCATION
                        ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libavcodec-57.so)
@@ -60,7 +62,7 @@ set_target_properties( swscale-4
                        PROPERTIES IMPORTED_LOCATION
                        ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libswscale-4.so)
 
-
+# 链接动态库
 target_link_libraries( # Specifies the target library.
                        native-lib
 

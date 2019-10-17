@@ -16,6 +16,7 @@ pthread_t startThread;
 
 bool stopped = false;//防止多次release
 
+//获取JVM对象，JVM是进程相关的，可以通过JVM来获取当前线程的JNIEnv，实现C++子线程调用Java方法
 extern "C"
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 

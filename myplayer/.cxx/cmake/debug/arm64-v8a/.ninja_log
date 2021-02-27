@@ -1,0 +1,8 @@
+# ninja log v5
+2	101	1614417101	CMakeFiles/native-lib.dir/src/main/cpp/XsPlaystatus.cpp.o	c35515ffd5953f47
+5	163	1614417101	CMakeFiles/native-lib.dir/src/main/cpp/XsCallJava.cpp.o	ce30a9f1ae83beac
+7	948	1614417102	CMakeFiles/native-lib.dir/src/main/cpp/XsFFmpeg.cpp.o	ff6bea5e88ad0ef
+0	1017	1614417102	CMakeFiles/native-lib.dir/src/main/cpp/XsQueue.cpp.o	4e752d11bbe0b04f
+8	1018	1614417102	CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o	1800a6a4250a8fe5
+2	524	1614417188	CMakeFiles/native-lib.dir/src/main/cpp/XsAudio.cpp.o	3708cf7a993e21eb
+524	652	1614417188	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so	a6f777e340cb2c3b

@@ -1,0 +1,8 @@
+ninja: Entering directory `/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/debug/arm64-v8a'
+[1/2] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/XsAudio.cpp.o
+../../../../src/main/cpp/XsAudio.cpp:86:21: warning: implicit conversion of NULL constant to 'int' [-Wnull-conversion]
+                    NULL,
+                    ^~~~
+                    0
+1 warning generated.
+[2/2] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so

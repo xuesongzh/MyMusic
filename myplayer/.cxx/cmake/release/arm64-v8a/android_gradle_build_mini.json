@@ -1,0 +1,29 @@
+{
+  "buildFiles": [
+    "/Users/zhangxuesong/Downloads/MyMusic/myplayer/CMakeLists.txt",
+    "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
+    "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/release/arm64-v8a\" clean"
+  ],
+  "buildTargetsCommand": "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/release/arm64-v8a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "native-lib-Release-arm64-v8a": {
+      "artifactName": "native-lib",
+      "buildCommand": "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/release/arm64-v8a\" native-lib",
+      "abi": "arm64-v8a",
+      "output": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/build/intermediates/cmake/release/obj/arm64-v8a/libnative-lib.so",
+      "runtimeFiles": [
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavcodec.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavdevice.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavfilter.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavformat.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavutil.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libpostproc.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libswresample.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libswscale.so"
+      ]
+    }
+  }
+}

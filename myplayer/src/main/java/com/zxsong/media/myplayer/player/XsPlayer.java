@@ -18,14 +18,14 @@ public class XsPlayer {
 
     static {
         System.loadLibrary("native-lib");
-        System.loadLibrary("avutil-55");
-        System.loadLibrary("swresample-2");
-        System.loadLibrary("avcodec-57");
-        System.loadLibrary("avformat-57");
-        System.loadLibrary("swscale-4");
-        System.loadLibrary("postproc-54");
-        System.loadLibrary("avfilter-6");
-        System.loadLibrary("avdevice-57");
+        System.loadLibrary("avutil");
+        System.loadLibrary("swresample");
+        System.loadLibrary("avcodec");
+        System.loadLibrary("avformat");
+        System.loadLibrary("swscale");
+        System.loadLibrary("postproc");
+        System.loadLibrary("avfilter");
+        System.loadLibrary("avdevice");
     }
 
     //数据源

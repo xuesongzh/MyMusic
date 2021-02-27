@@ -1,0 +1,77 @@
+{
+  "stringTable": {
+    "0": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/debug/arm64-v8a",
+    "1": "--target=aarch64-none-linux-android21 --gcc-toolchain=/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dnative_lib_EXPORTS -I../../../../src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -frtti -fexceptions -O0 -fno-limit-debug-info -fPIC"
+  },
+  "buildFiles": [
+    "/Users/zhangxuesong/Downloads/MyMusic/myplayer/CMakeLists.txt",
+    "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
+    "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/debug/arm64-v8a\" clean"
+  ],
+  "buildTargetsCommand": "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/debug/arm64-v8a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "native-lib-Debug-arm64-v8a": {
+      "buildCommand": "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/debug/arm64-v8a\" native-lib",
+      "buildType": "debug",
+      "toolchain": "2370109152",
+      "abi": "arm64-v8a",
+      "artifactName": "native-lib",
+      "files": [
+        {
+          "src": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/cpp/XsQueue.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/cpp/XsPlaystatus.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/cpp/XsAudio.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/cpp/XsCallJava.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/cpp/XsFFmpeg.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/cpp/native-lib.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        }
+      ],
+      "headers": [],
+      "output": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so",
+      "runtimeFiles": [
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavcodec.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavdevice.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavfilter.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavformat.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libavutil.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libpostproc.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libswresample.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/arm64-v8a/libswscale.so"
+      ]
+    }
+  },
+  "toolchains": {
+    "2370109152": {
+      "cppCompilerExecutable": "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "buildFiles": [
+    "/Users/zhangxuesong/Downloads/MyMusic/myplayer/CMakeLists.txt",
+    "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
+    "/Users/zhangxuesong/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/release/x86\" clean"
+  ],
+  "buildTargetsCommand": "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/release/x86\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "native-lib-Release-x86": {
+      "artifactName": "native-lib",
+      "buildCommand": "/Users/zhangxuesong/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/release/x86\" native-lib",
+      "abi": "x86",
+      "output": "/Users/zhangxuesong/Downloads/MyMusic/myplayer/build/intermediates/cmake/release/obj/x86/libnative-lib.so",
+      "runtimeFiles": [
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libavcodec.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libavdevice.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libavfilter.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libavformat.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libavutil.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libpostproc.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libswresample.so",
+        "/Users/zhangxuesong/Downloads/MyMusic/myplayer/src/main/libs/x86/libswscale.so"
+      ]
+    }
+  }
+}

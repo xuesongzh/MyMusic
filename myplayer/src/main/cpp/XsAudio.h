@@ -13,6 +13,7 @@ extern "C"
 {
 #include "libavcodec/avcodec.h"
 #include "libswresample/swresample.h"
+#include "libavutil/time.h"
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 };
@@ -30,7 +31,7 @@ public:
     AVPacket *avPacket = NULL;
     AVFrame *avFrame = NULL;
     int ret = 0;
-    uint8_t *buffer = NULL;
+    uint8_t *buffer = NULL; //转码后输出的PCM数据大小
     int data_size = 0;
     int sample_rate = 0;
 
@@ -57,15 +58,16 @@ public:
     SLAndroidSimpleBufferQueueItf pcmBufferQueue = NULL;
 
 public:
-    XsAudio(XsPlaystatus *playstatus, int sample_rate, XsCallJava *callJava1);
+    XsAudio(XsPlaystatus *playstatus, int sample_rate, XsCallJava *callJava);
     ~XsAudio();
-
-    void play();
-    int resampleAudio();
 
     void initOpenSLES();
 
+    int resampleAudio();
+
     int getSampleRateForOpenSLES(int sample_rate);
+
+    void play();
 
     void pause();
 

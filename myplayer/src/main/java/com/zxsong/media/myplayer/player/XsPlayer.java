@@ -46,6 +46,7 @@ public class XsPlayer {
 
     /**
      * 设置数据源
+     *
      * @param source
      */
     public void setSource(String source) {
@@ -54,6 +55,7 @@ public class XsPlayer {
 
     /**
      * 设置准备接口回调
+     *
      * @param onPreparedListener
      */
     public void setOnPreparedListener(OnPreparedListener onPreparedListener) {
@@ -140,6 +142,7 @@ public class XsPlayer {
         playNext = true;
         stop();
     }
+
     /**
      * c++回调java的方法
      */
@@ -188,10 +191,15 @@ public class XsPlayer {
     }
 
     private native void n_prepared(String source);
+
     private native void n_start();
+
     private native void n_pause();
+
     private native void n_resume();
+
     private native void n_stop();
+
     private native void n_seek(int seconds);
 
 }

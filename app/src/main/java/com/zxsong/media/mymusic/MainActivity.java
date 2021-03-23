@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextView;
 
     private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         mTextView = findViewById(R.id.tv_time);
+
         mXsPlayer = new XsPlayer();
         mXsPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
@@ -104,8 +106,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void begin(View view) {
-        mXsPlayer.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
+//        mXsPlayer.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
 //        mXsPlayer.setSource("http://ngcdn004.cnr.cn/live/dszs/index.m3u8");
+        mXsPlayer.setSource("/storage/emulated/0/123.mp4");
         mXsPlayer.prepared();
     }
 
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seek(View view) {
-        mXsPlayer.seek(215);
+        mXsPlayer.seek(100);
     }
 
     public void next(View view) {

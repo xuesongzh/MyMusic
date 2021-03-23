@@ -77,6 +77,13 @@ build CMakeFiles/native-lib.dir/src/main/cpp/XsAudio.cpp.o: CXX_COMPILER__native
   INCLUDES = -I../../../../src/main/cpp/include
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp
+build CMakeFiles/native-lib.dir/src/main/cpp/XsVideo.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/XsVideo.cpp || cmake_object_order_depends_target_native-lib
+  DEFINES = -Dnative_lib_EXPORTS
+  DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/XsVideo.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC
+  INCLUDES = -I../../../../src/main/cpp/include
+  OBJECT_DIR = CMakeFiles/native-lib.dir
+  OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp
 build CMakeFiles/native-lib.dir/src/main/cpp/XsCallJava.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/XsCallJava.cpp || cmake_object_order_depends_target_native-lib
   DEFINES = -Dnative_lib_EXPORTS
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/XsCallJava.cpp.o.d
@@ -106,7 +113,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o: CXX_COMPILER__nat
 #############################################
 # Link the shared library ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so
 
-build ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so: CXX_SHARED_LIBRARY_LINKER__native-lib CMakeFiles/native-lib.dir/src/main/cpp/XsQueue.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsPlaystatus.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsAudio.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsCallJava.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsFFmpeg.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o | ../../../../src/main/libs/arm64-v8a/libavcodec.so ../../../../src/main/libs/arm64-v8a/libavdevice.so ../../../../src/main/libs/arm64-v8a/libavfilter.so ../../../../src/main/libs/arm64-v8a/libavformat.so ../../../../src/main/libs/arm64-v8a/libavutil.so ../../../../src/main/libs/arm64-v8a/libpostproc.so ../../../../src/main/libs/arm64-v8a/libswresample.so ../../../../src/main/libs/arm64-v8a/libswscale.so
+build ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so: CXX_SHARED_LIBRARY_LINKER__native-lib CMakeFiles/native-lib.dir/src/main/cpp/XsQueue.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsPlaystatus.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsAudio.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsVideo.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsCallJava.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/XsFFmpeg.cpp.o CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o | ../../../../src/main/libs/arm64-v8a/libavcodec.so ../../../../src/main/libs/arm64-v8a/libavdevice.so ../../../../src/main/libs/arm64-v8a/libavfilter.so ../../../../src/main/libs/arm64-v8a/libavformat.so ../../../../src/main/libs/arm64-v8a/libavutil.so ../../../../src/main/libs/arm64-v8a/libpostproc.so ../../../../src/main/libs/arm64-v8a/libswresample.so ../../../../src/main/libs/arm64-v8a/libswscale.so
   LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -frtti -fexceptions -O0 -fno-limit-debug-info
   LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libgcc_real.a -Wl,--exclude-libs,libatomic.a -static-libstdc++ -Wl,--build-id -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments
   LINK_LIBRARIES = ../../../../src/main/libs/arm64-v8a/libavcodec.so ../../../../src/main/libs/arm64-v8a/libavdevice.so ../../../../src/main/libs/arm64-v8a/libavfilter.so ../../../../src/main/libs/arm64-v8a/libavformat.so ../../../../src/main/libs/arm64-v8a/libavutil.so ../../../../src/main/libs/arm64-v8a/libpostproc.so ../../../../src/main/libs/arm64-v8a/libswresample.so ../../../../src/main/libs/arm64-v8a/libswscale.so -lOpenSLES -llog -latomic -lm

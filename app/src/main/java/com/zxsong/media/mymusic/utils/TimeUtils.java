@@ -38,8 +38,7 @@ public class TimeUtils {
             }
         }
 
-        if(time >= 3600)
-        {
+        if(time >= 3600) {
             return sh + ":" + sm + ":" + ss;
         }
         return sm + ":" + ss;

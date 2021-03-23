@@ -1,8 +1,32 @@
 ninja: Entering directory `/Users/zhangxuesong/Downloads/MyMusic/myplayer/.cxx/cmake/debug/arm64-v8a'
-[1/2] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/XsAudio.cpp.o
-../../../../src/main/cpp/XsAudio.cpp:86:21: warning: implicit conversion of NULL constant to 'int' [-Wnull-conversion]
-                    NULL,
-                    ^~~~
-                    0
-1 warning generated.
-[2/2] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so
+[1/3] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/XsVideo.cpp.o
+[2/3] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/XsFFmpeg.cpp.o
+../../../../src/main/cpp/XsFFmpeg.cpp:48:5: warning: 'av_register_all' is deprecated [-Wdeprecated-declarations]
+    av_register_all();
+    ^
+../../../../src/main/cpp/include/libavformat/avformat.h:2049:1: note: 'av_register_all' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:100:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/XsFFmpeg.cpp:61:51: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+        callJava->onCallError(CHILD_THREAD, 1001, "can not open url");
+                                                  ^
+../../../../src/main/cpp/XsFFmpeg.cpp:72:51: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+        callJava->onCallError(CHILD_THREAD, 1002, "can not find stream from url");
+                                                  ^
+../../../../src/main/cpp/XsFFmpeg.cpp:299:51: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+        callJava->onCallError(CHILD_THREAD, 1003, "can not find decoder");
+                                                  ^
+../../../../src/main/cpp/XsFFmpeg.cpp:311:51: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+        callJava->onCallError(CHILD_THREAD, 1004, "can not alloc new decodecctx");
+                                                  ^
+../../../../src/main/cpp/XsFFmpeg.cpp:320:51: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+        callJava->onCallError(CHILD_THREAD, 1005, "can not fill decodecctx");
+                                                  ^
+../../../../src/main/cpp/XsFFmpeg.cpp:331:51: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+        callJava->onCallError(CHILD_THREAD, 1006, "cant not open audio strames");
+                                                  ^
+7 warnings generated.
+[3/3] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so

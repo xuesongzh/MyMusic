@@ -18,7 +18,8 @@ bool stopped = false;//防止多次release
 
 //获取JVM对象，JVM是进程相关的，可以通过JVM来获取当前线程的JNIEnv，实现C++子线程调用Java方法
 extern "C"
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
+JNIEXPORT jint JNICALL
+JNI_OnLoad(JavaVM *jvm, void *reserved) {
 
     JNIEnv *env;
     javaVM = jvm;
@@ -59,6 +60,7 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1start(JNIEnv *env, jobject ins
         pthread_create(&startThread, NULL, startCallback, ffmpeg);
     }
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_zxsong_media_myplayer_player_XsPlayer_n_1pause(JNIEnv *env, jobject instance) {
@@ -67,6 +69,7 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1pause(JNIEnv *env, jobject ins
         ffmpeg->pause();
     }
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_zxsong_media_myplayer_player_XsPlayer_n_1resume(JNIEnv *env, jobject instance) {
@@ -75,6 +78,7 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1resume(JNIEnv *env, jobject in
         ffmpeg->resume();
     }
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject instance) {
@@ -89,17 +93,17 @@ Java_com_zxsong_media_myplayer_player_XsPlayer_n_1stop(JNIEnv *env, jobject inst
     stopped = true;
     if (ffmpeg != NULL) {
         ffmpeg->release();
-        delete (ffmpeg);
+        delete ffmpeg;
         ffmpeg = NULL;
     }
 
     if (callJava != NULL) {
-        delete (callJava);
+        delete callJava;
         callJava = NULL;
     }
 
     if (playStatus != NULL) {
-        delete (playStatus);
+        delete playStatus;
         playStatus = NULL;
     }
     stopped = false;

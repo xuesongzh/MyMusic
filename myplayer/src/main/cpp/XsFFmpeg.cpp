@@ -4,12 +4,17 @@
 
 #include "XsFFmpeg.h"
 
-XsFFmpeg::XsFFmpeg(XsPlaystatus *playstatus, XsCallJava *callJava, const char *url) {
-    this->playstatus = playstatus;
+XsFFmpeg::XsFFmpeg(XsPlaystatus *playStatus, XsCallJava *callJava, const char *url) {
+    this->playStatus = playStatus;
     this->callJava = callJava;
     this->url = url;
     pthread_mutex_init(&init_mutex, NULL);
     pthread_mutex_init(&seek_mutex, NULL);
+}
+
+XsFFmpeg::~XsFFmpeg() {
+    pthread_mutex_destroy(&init_mutex);
+    pthread_mutex_destroy(&seek_mutex);
 }
 
 void *decodeFFmpeg(void *data) {
@@ -29,8 +34,8 @@ void XsFFmpeg::parpared() {
 }
 
 int avformat_callback(void *ctx) {
-    XsFFmpeg *fFmpeg = (XsFFmpeg *) ctx;
-    if (fFmpeg->playstatus->exit) {
+    XsFFmpeg *ffmpeg = (XsFFmpeg *) ctx;
+    if (ffmpeg->playStatus->exit) {
         return AVERROR_EOF;
     }
     return 0;
@@ -70,11 +75,11 @@ void XsFFmpeg::decodeFFmpegThread() {
         return;
     }
 
-    //4、获取音频流
+    //4、获取音频流或者视频流
     for (int i = 0; i < pFormatCtx->nb_streams; ++i) {
         if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             if (audio == NULL) {
-                audio = new XsAudio(playstatus, pFormatCtx->streams[i]->codecpar->sample_rate,
+                audio = new XsAudio(playStatus, pFormatCtx->streams[i]->codecpar->sample_rate,
                                     callJava);
                 audio->streamIndex = i;
                 audio->avCodecPar = pFormatCtx->streams[i]->codecpar;
@@ -82,52 +87,31 @@ void XsFFmpeg::decodeFFmpegThread() {
                 audio->time_base = pFormatCtx->streams[i]->time_base;
                 duration = audio->duration;
             }
+        } else if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+            if (video == NULL) {
+                video = new XsVideo(playStatus, callJava);
+                video->streamIndex = i;
+                video->avCodecPar = pFormatCtx->streams[i]->codecpar;
+                video->time_base = pFormatCtx->streams[i]->time_base;
+
+//                int num = pFormatCtx->streams[i]->avg_frame_rate.num;
+//                int den = pFormatCtx->streams[i]->avg_frame_rate.den;
+//                if (num != 0 && den != 0) {
+//                    int fps = num / den;  //[25 / 1]
+//                    video->defaultDelayTime = 1.0 / fps;
+//                }
+            }
         }
     }
 
-    //5、获取解码器
-    AVCodec *codec = avcodec_find_decoder(audio->avCodecPar->codec_id);
-    if (!codec) {
-        if (LOG_DEBUG) {
-            LOGE("can not find decoder");
-        }
-        callJava->onCallError(CHILD_THREAD, 1003, "can not find decoder");
-        exit = true;
-        pthread_mutex_unlock(&init_mutex);
-        return;
+    if (audio != NULL) {
+        getCodecContext(audio->avCodecPar, &audio->avCodecCtx);
     }
 
-    //6、利用解码器创建解码器上下文
-    audio->avCodecCtx = avcodec_alloc_context3(codec);
-    if (!audio->avCodecCtx) {
-        if (LOG_DEBUG) {
-            LOGE("can not alloc new decodecctx");
-        }
-        callJava->onCallError(CHILD_THREAD, 1004, "can not alloc new decodecctx");
-        exit = true;
-        pthread_mutex_unlock(&init_mutex);
-        return;
-    }
-    if (avcodec_parameters_to_context(audio->avCodecCtx, audio->avCodecPar) < 0) {
-        if (LOG_DEBUG) {
-            LOGE("can not fill decodecctx");
-        }
-        callJava->onCallError(CHILD_THREAD, 1005, "ccan not fill decodecctx");
-        exit = true;
-        pthread_mutex_unlock(&init_mutex);
-        return;
+    if (video != NULL) {
+        getCodecContext(video->avCodecPar, &video->avCodecCtx);
     }
 
-    //7、打开解码器
-    if (avcodec_open2(audio->avCodecCtx, codec, 0) != 0) {
-        if (LOG_DEBUG) {
-            LOGE("cant not open audio strames");
-        }
-        callJava->onCallError(CHILD_THREAD, 1006, "cant not open audio strames");
-        exit = true;
-        pthread_mutex_unlock(&init_mutex);
-        return;
-    }
     callJava->onCallPrepared(CHILD_THREAD);
 
     pthread_mutex_unlock(&init_mutex);
@@ -135,22 +119,27 @@ void XsFFmpeg::decodeFFmpegThread() {
 
 void XsFFmpeg::start() {
     if (audio == NULL) {
-        if (LOG_DEBUG) {
-            LOGE("audio is null");
-            return;
-        }
+        return;
+    }
+
+    if (video == NULL) {
+        return;
     }
 
     audio->play();
+    video->play();
+
     //8、读取音频帧
-    int count = 0;
-    while (playstatus != NULL && !playstatus->exit) {
-        if (playstatus->seek) {
+//    int count = 0;
+    while (playStatus != NULL && !playStatus->exit) {
+        if (playStatus->seek) {
+            av_usleep(1000 * 100);
             continue;
         }
 
         //设置队列的大小
         if (audio->queue->getQueueSize() > 40) {
+            av_usleep(1000 * 100);
             continue;
         }
 
@@ -162,28 +151,29 @@ void XsFFmpeg::start() {
 
         if (ret == 0) {
             if (avPacket->stream_index == audio->streamIndex) {
-                count++;
-               /* if (LOG_DEBUG) {
+                /*count++;
+                if (LOG_DEBUG) {
                     LOGE("解码第 %d 帧", count);
                 }*/
                 audio->queue->putAvpacket(avPacket);
+            } else if (avPacket->stream_index == video->streamIndex) {
+                video->queue->putAvpacket(avPacket);
             } else {
                 av_packet_free(&avPacket);
                 av_free(avPacket);
                 avPacket = NULL;
             }
         } else {
-            if (LOG_DEBUG) {
-                LOGE("decode finished");
-            }
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
-            while (playstatus != NULL && !playstatus->exit) {
+            while (playStatus != NULL && !playStatus->exit) {
                 if (audio->queue->getQueueSize() > 0) {
+                    av_usleep(1000 * 100);
                     continue;
                 } else {
-                    playstatus->exit = true;
+                    av_usleep(1000 * 100);
+                    playStatus->exit = true;
                     break;
                 }
             }
@@ -202,9 +192,11 @@ void XsFFmpeg::start() {
     if (callJava != NULL) {
         callJava->onCallComplete(CHILD_THREAD);
     }
+
     exit = true;
+
     if (LOG_DEBUG) {
-        LOGD("解码完成");
+        LOGE("decode finished");
     }
 }
 
@@ -226,7 +218,7 @@ void XsFFmpeg::release() {
         LOGE("开始释放Ffmpeg");
     }
 
-    playstatus->exit = true;
+    playStatus->exit = true;
 
     pthread_mutex_lock(&init_mutex);
     int sleepCount = 0;
@@ -244,11 +236,19 @@ void XsFFmpeg::release() {
     if (LOG_DEBUG) {
         LOGE("释放 Audio");
     }
-
     if (audio != NULL) {
         audio->release();
-        delete (audio);
+        delete audio;
         audio = NULL;
+    }
+
+    if (LOG_DEBUG) {
+        LOGE("释放 Video");
+    }
+    if (video != NULL) {
+        video->release();
+        delete video;
+        video = NULL;
     }
 
     if (pFormatCtx != NULL) {
@@ -261,15 +261,10 @@ void XsFFmpeg::release() {
         callJava = NULL;
     }
 
-    if (playstatus != NULL) {
-        playstatus = NULL;
+    if (playStatus != NULL) {
+        playStatus = NULL;
     }
     pthread_mutex_unlock(&init_mutex);
-}
-
-XsFFmpeg::~XsFFmpeg() {
-    pthread_mutex_destroy(&init_mutex);
-    pthread_mutex_destroy(&seek_mutex);
 }
 
 void XsFFmpeg::seek(int64_t seconds) {
@@ -280,7 +275,7 @@ void XsFFmpeg::seek(int64_t seconds) {
 
     if (seconds >= 0 && seconds <= duration) {
         if (audio != NULL) {
-            playstatus->seek = true;
+            playStatus->seek = true;
             audio->queue->clearAvpacket();
             audio->play_time = 0;
             audio->last_time = 0;
@@ -289,7 +284,54 @@ void XsFFmpeg::seek(int64_t seconds) {
             int64_t pos = seconds * AV_TIME_BASE;
             avformat_seek_file(pFormatCtx, -1, INT64_MIN, pos, INT64_MAX, 0);
             pthread_mutex_unlock(&seek_mutex);
-            playstatus->seek = false;
+            playStatus->seek = false;
         }
     }
+}
+
+void XsFFmpeg::getCodecContext(AVCodecParameters *codecPar, AVCodecContext **avCodecContext) {
+    //5、获取解码器
+    AVCodec *codec = avcodec_find_decoder(codecPar->codec_id);
+    if (!codec) {
+        if (LOG_DEBUG) {
+            LOGE("can not find decoder");
+        }
+        callJava->onCallError(CHILD_THREAD, 1003, "can not find decoder");
+        exit = true;
+        pthread_mutex_unlock(&init_mutex);
+        return;
+    }
+
+    //6、利用解码器创建解码器上下文
+    *avCodecContext = avcodec_alloc_context3(codec);
+    if (!*avCodecContext) {
+        if (LOG_DEBUG) {
+            LOGE("can not alloc new decodecctx");
+        }
+        callJava->onCallError(CHILD_THREAD, 1004, "can not alloc new decodecctx");
+        exit = true;
+        pthread_mutex_unlock(&init_mutex);
+        return;
+    }
+    if (avcodec_parameters_to_context(*avCodecContext, codecPar) < 0) {
+        if (LOG_DEBUG) {
+            LOGE("can not fill decodecctx");
+        }
+        callJava->onCallError(CHILD_THREAD, 1005, "can not fill decodecctx");
+        exit = true;
+        pthread_mutex_unlock(&init_mutex);
+        return;
+    }
+
+    //7、打开解码器
+    if (avcodec_open2(*avCodecContext, codec, 0) != 0) {
+        if (LOG_DEBUG) {
+            LOGE("cant not open audio strames");
+        }
+        callJava->onCallError(CHILD_THREAD, 1006, "cant not open audio strames");
+        exit = true;
+        pthread_mutex_unlock(&init_mutex);
+        return;
+    }
+    return;
 }

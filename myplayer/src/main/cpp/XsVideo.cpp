@@ -8,10 +8,11 @@ XsVideo::XsVideo(XsPlaystatus *playStatus, XsCallJava *callJava) {
     this->playStatus = playStatus;
     this->callJava = callJava;
     queue = new XsQueue(playStatus);
+    pthread_mutex_init(&codecMutex, NULL);
 }
 
 XsVideo::~XsVideo() {
-
+    pthread_mutex_destroy(&codecMutex);
 }
 
 void *playVideo(void *data) {
@@ -22,10 +23,10 @@ void *playVideo(void *data) {
             av_usleep(1000 * 100);
             continue;
         }
-//        if (video->playStatus->pause) {
-//            av_usleep(1000 * 100);
-//            continue;
-//        }
+        if (video->playStatus->pause) {
+            av_usleep(1000 * 100);
+            continue;
+        }
 
         if (video->queue->getQueueSize() == 0) {
             if (!video->playStatus->load) {
@@ -47,8 +48,10 @@ void *playVideo(void *data) {
             continue;
         }
 
+        pthread_mutex_lock(&video->codecMutex);
         if (avcodec_send_packet(video->avCodecCtx, avPacket) != 0) {
             video->freePacket(avPacket);
+            pthread_mutex_unlock(&video->codecMutex);
             continue;
         }
 
@@ -56,11 +59,18 @@ void *playVideo(void *data) {
         if (avcodec_receive_frame(video->avCodecCtx, avFrame) != 0) {
             video->freeFrame(avFrame);
             video->freePacket(avPacket);
+            pthread_mutex_unlock(&video->codecMutex);
             continue;
         }
         LOGE("子线程解码一个AVframe成功");
+
+        double diff = video->getFrameDiffTime(avFrame, NULL);
+        LOGE("diff is %f", diff);
+
         if (avFrame->format == AV_PIX_FMT_YUV420P) {
             LOGE("当前视频是YUV420P格式");
+            // 视频同步音频
+            av_usleep(video->getDelayTime(diff) * 1000000);
             video->callJava->onCallRenderYUV(video->avCodecCtx->width, video->avCodecCtx->height,
                                              avFrame->data[0], avFrame->data[1],
                                              avFrame->data[2]);
@@ -87,24 +97,21 @@ void *playVideo(void *data) {
             if (!sws_ctx) {
                 video->freeFrame(pFrameYUV420P);
                 av_free(buffer);
-//                pthread_mutex_unlock(&video->codecMutex);
+                pthread_mutex_unlock(&video->codecMutex);
                 continue;
             }
             sws_scale(sws_ctx, avFrame->data, avFrame->linesize, 0, avFrame->height,
                       pFrameYUV420P->data, pFrameYUV420P->linesize);
+
             //渲染
-
-//            double diff = video->getFrameDiffTime(avFrame, NULL);
-//            LOGE("diff is %f", diff);
-//
-//            av_usleep(video->getDelayTime(diff) * 1000000);
-
+            av_usleep(video->getDelayTime(diff) * 1000000);
             video->callJava->onCallRenderYUV(video->avCodecCtx->width, video->avCodecCtx->height,
                                              pFrameYUV420P->data[0], pFrameYUV420P->data[1],
                                              pFrameYUV420P->data[2]);
         }
         video->freeFrame(avFrame);
         video->freePacket(avPacket);
+        pthread_mutex_unlock(&video->codecMutex);
     }
     return 0;
 }
@@ -116,7 +123,53 @@ void XsVideo::play() {
 }
 
 double XsVideo::getFrameDiffTime(AVFrame *avFrame, AVPacket *avPacket) {
-    return 0;
+    double pts = 0;
+    if (avFrame != NULL) {
+        pts = av_frame_get_best_effort_timestamp(avFrame);
+    }
+    if (avPacket != NULL) {
+        pts = avPacket->pts;
+    }
+    if (pts == AV_NOPTS_VALUE) {
+        pts = 0;
+    }
+    pts *= av_q2d(time_base);
+
+    if (pts > 0) {
+        playTime = pts;
+    }
+
+    double diff = audio->play_time - playTime;
+    return diff;
+}
+
+double XsVideo::getDelayTime(double diff) {
+    if (diff > 0.003) { //音频快了
+        delayTime = delayTime * 2 / 3;
+        if (delayTime < defaultDelayTime / 2) {
+            delayTime = defaultDelayTime * 2 / 3;
+        } else if (delayTime > defaultDelayTime * 2) {
+            delayTime = defaultDelayTime * 2;
+        }
+    } else if (diff < -0.003) { //音频慢了
+        delayTime = delayTime * 3 / 2;
+        if (delayTime < defaultDelayTime / 2) {
+            delayTime = defaultDelayTime * 2 / 3;
+        } else if (delayTime > defaultDelayTime * 2) {
+            delayTime = defaultDelayTime * 2;
+        }
+    }
+
+    if (diff >= 0.5) {
+        delayTime = 0;
+    } else if (diff <= -0.5) {
+        delayTime = defaultDelayTime * 2;
+    }
+
+    if (fabs(diff) >= 10) {
+        delayTime = defaultDelayTime;
+    }
+    return delayTime;
 }
 
 void XsVideo::freePacket(AVPacket *avPacket) {
@@ -140,9 +193,11 @@ void XsVideo::release() {
     }
 
     if (avCodecCtx != NULL) {
+        pthread_mutex_lock(&codecMutex);
         avcodec_close(avCodecCtx);
         avcodec_free_context(&avCodecCtx);
         avCodecCtx = NULL;
+        pthread_mutex_unlock(&codecMutex);
     }
 
     if (playStatus != NULL) {
@@ -153,4 +208,5 @@ void XsVideo::release() {
         callJava = NULL;
     }
 }
+
 

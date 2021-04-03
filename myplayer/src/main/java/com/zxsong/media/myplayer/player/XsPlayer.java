@@ -33,6 +33,7 @@ public class XsPlayer {
     private String source;
     private static TimeInfoBean sTimeInfoBean;
     private boolean playNext = false;
+    private int duration;
 
     private OnPreparedListener mOnPreparedListener;
     private OnLoadListener mOnLoadListener;
@@ -57,6 +58,10 @@ public class XsPlayer {
 
     public void setXsGLSurfaceView(XsGLSurfaceView xsGLSurfaceView) {
         mXsGLSurfaceView = xsGLSurfaceView;
+    }
+
+    public int getDuration() {
+       return duration;
     }
 
     /**
@@ -103,11 +108,6 @@ public class XsPlayer {
     }
 
     public void start() {
-        if (TextUtils.isEmpty(source)) {
-            Log.d(TAG, "source is empty !");
-            return;
-        }
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -171,6 +171,7 @@ public class XsPlayer {
             }
             sTimeInfoBean.setCurrentTime(currentTime);
             sTimeInfoBean.setTotalTime(totalTime);
+            duration = totalTime;
             mOnTimeInfoListener.onTimeInfo(sTimeInfoBean);
         }
     }

@@ -24,10 +24,10 @@ public:
     AVRational time_base;
     pthread_t thread_play;
     XsAudio *audio = NULL;
-//    double clock = 0;
-//    double delayTime = 0;
-//    double defaultDelayTime = 0.04;
-//    pthread_mutex_t codecMutex;
+    double playTime = 0;
+    double delayTime = 0;
+    double defaultDelayTime = 0.04; //sleep一帧时间
+    pthread_mutex_t codecMutex;
 //
 //    int codectype = CODEC_YUV;
 //

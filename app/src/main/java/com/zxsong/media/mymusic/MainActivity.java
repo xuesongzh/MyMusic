@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zxsong.media.mymusic.utils.PermissionUtils;
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private XsPlayer mXsPlayer;
     private TextView mTextView;
     private XsGLSurfaceView mXsGLSurfaceView;
+    private SeekBar mSeekBar;
+    private int position;
+    private boolean seek = false;
 
     private static final String TAG = "MainActivity";
 
@@ -50,9 +54,28 @@ public class MainActivity extends AppCompatActivity {
                 });
         mTextView = findViewById(R.id.tv_time);
         mXsGLSurfaceView = findViewById(R.id.xsglsurfaceview);
+        mSeekBar = findViewById(R.id.seek_bar);
         mXsPlayer = new XsPlayer();
 
         mXsPlayer.setXsGLSurfaceView(mXsGLSurfaceView);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                position = progress * mXsPlayer.getDuration() / 100;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                seek = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mXsPlayer.seek(position);
+                seek = false;
+            }
+        });
+
         mXsPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared() {
@@ -112,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     public void begin(View view) {
 //        mXsPlayer.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
 //        mXsPlayer.setSource("http://ngcdn004.cnr.cn/live/dszs/index.m3u8");
-        mXsPlayer.setSource("/storage/emulated/0/123.mp4");
+        mXsPlayer.setSource("/storage/emulated/0/js.mp4");
         mXsPlayer.prepared();
     }
 
@@ -129,11 +152,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seek(View view) {
-        mXsPlayer.seek(100);
+        mXsPlayer.seek(10);
     }
 
     public void next(View view) {
-        mXsPlayer.playNext("http://ngcdn004.cnr.cn/live/dszs/index.m3u8");
+        mXsPlayer.playNext("/storage/emulated/0/123.mp4");
     }
 
     Handler mHandler = new Handler() {
@@ -144,6 +167,10 @@ public class MainActivity extends AppCompatActivity {
                 TimeInfoBean timeInfoBean = (TimeInfoBean) msg.obj;
                 mTextView.setText(TimeUtils.getStringTime(timeInfoBean.getCurrentTime())
                         + "/" + TimeUtils.getStringTime(timeInfoBean.getTotalTime()));
+
+                if (!seek && timeInfoBean.getTotalTime() > 0) {
+                    mSeekBar.setProgress(timeInfoBean.getCurrentTime() * 100 / timeInfoBean.getTotalTime());
+                }
             }
         }
     };

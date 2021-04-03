@@ -10,10 +10,11 @@ XsAudio::XsAudio(XsPlaystatus *playstatus, int sample_rate, XsCallJava *callJava
     this->callJava = callJava;
     queue = new XsQueue(playstatus);
     buffer = (uint8_t *) av_malloc(sample_rate * 2 * 2);//1s的PCM大小
+    pthread_mutex_init(&codecMutex, NULL);
 }
 
 XsAudio::~XsAudio() {
-
+    pthread_mutex_destroy(&codecMutex);
 }
 
 void *playAudio(void *data) {
@@ -56,11 +57,13 @@ int XsAudio::resampleAudio() {
             continue;
         }
 
+        pthread_mutex_lock(&codecMutex);
         ret = avcodec_send_packet(avCodecCtx, avPacket);
         if (ret != 0) {//error
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
+            pthread_mutex_unlock(&codecMutex);
             continue;
         }
 
@@ -98,6 +101,7 @@ int XsAudio::resampleAudio() {
                     swr_free(&swrContext);
                     swrContext = NULL;
                 }
+                pthread_mutex_unlock(&codecMutex);
                 continue;
             }
 
@@ -133,6 +137,7 @@ int XsAudio::resampleAudio() {
             avFrame = NULL;
             swr_free(&swrContext);
             swrContext = NULL;
+            pthread_mutex_unlock(&codecMutex);
             break;
         } else {
             av_packet_free(&avPacket);
@@ -141,6 +146,7 @@ int XsAudio::resampleAudio() {
             av_frame_free(&avFrame);
             av_free(avFrame);
             avFrame = NULL;
+            pthread_mutex_unlock(&codecMutex);
             continue;
         }
 
@@ -335,9 +341,11 @@ void XsAudio::release() {
     }
 
     if (avCodecCtx != NULL) {
+        pthread_mutex_lock(&codecMutex);
         avcodec_close(avCodecCtx);
         avcodec_free_context(&avCodecCtx);
         avCodecCtx = NULL;
+        pthread_mutex_unlock(&codecMutex);
     }
 
     if (playstatus != NULL) {

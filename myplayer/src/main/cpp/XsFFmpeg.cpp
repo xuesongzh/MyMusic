@@ -125,11 +125,12 @@ void XsFFmpeg::start() {
     if (video == NULL) {
         return;
     }
+    video->audio = audio;
 
     audio->play();
     video->play();
 
-    //8、读取音频帧
+    //8、读取音视频帧
 //    int count = 0;
     while (playStatus != NULL && !playStatus->exit) {
         if (playStatus->seek) {

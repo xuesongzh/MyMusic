@@ -11,6 +11,7 @@ import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
 import com.zxsong.media.myplayer.listener.OnTimeInfoListener;
+import com.zxsong.media.myplayer.opengl.XsGLSurfaceView;
 
 public class XsPlayer {
 
@@ -39,6 +40,7 @@ public class XsPlayer {
     private OnTimeInfoListener mOnTimeInfoListener;
     private OnErrorListener mOnErrorListener;
     private OnCompleteListener mOnCompleteListener;
+    private XsGLSurfaceView mXsGLSurfaceView;
 
     public XsPlayer() {
 
@@ -51,6 +53,10 @@ public class XsPlayer {
      */
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public void setXsGLSurfaceView(XsGLSurfaceView xsGLSurfaceView) {
+        mXsGLSurfaceView = xsGLSurfaceView;
     }
 
     /**
@@ -187,6 +193,14 @@ public class XsPlayer {
         if (playNext) {
             playNext = false;
             prepared();
+        }
+    }
+
+    public void onCallRenderYUV(int width, int height, byte[] y, byte[] u, byte[] v) {
+        Log.d(TAG,"获取到视频的yuv数据");
+        if (mXsGLSurfaceView != null) {
+//            mXsGLSurfaceView.getWlRender().setRenderType(WlRender.RENDER_YUV);
+            mXsGLSurfaceView.setYUVData(width, height, y, u, v);
         }
     }
 

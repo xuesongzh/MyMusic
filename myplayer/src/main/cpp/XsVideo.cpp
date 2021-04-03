@@ -59,6 +59,50 @@ void *playVideo(void *data) {
             continue;
         }
         LOGE("子线程解码一个AVframe成功");
+        if (avFrame->format == AV_PIX_FMT_YUV420P) {
+            LOGE("当前视频是YUV420P格式");
+            video->callJava->onCallRenderYUV(video->avCodecCtx->width, video->avCodecCtx->height,
+                                             avFrame->data[0], avFrame->data[1],
+                                             avFrame->data[2]);
+
+        } else {
+            LOGE("当前视频不是YUV420P格式");
+            //格式转换
+            AVFrame *pFrameYUV420P = av_frame_alloc();
+            int num = av_image_get_buffer_size(AV_PIX_FMT_YUV420P, video->avCodecCtx->width,
+                                               video->avCodecCtx->height, 1);
+            uint8_t *buffer = static_cast<uint8_t *>(av_malloc(num * sizeof(uint8_t)));
+            av_image_fill_arrays(pFrameYUV420P->data, pFrameYUV420P->linesize, buffer,
+                                 AV_PIX_FMT_YUV420P, video->avCodecCtx->width,
+                                 video->avCodecCtx->height, 1);
+            SwsContext *sws_ctx = sws_getContext(video->avCodecCtx->width,
+                                                 video->avCodecCtx->height,
+                                                 video->avCodecCtx->pix_fmt,
+                                                 video->avCodecCtx->width,
+                                                 video->avCodecCtx->height,
+                                                 AV_PIX_FMT_YUV420P,
+                                                 SWS_BICUBIC,
+                                                 NULL, NULL, NULL);
+
+            if (!sws_ctx) {
+                video->freeFrame(pFrameYUV420P);
+                av_free(buffer);
+//                pthread_mutex_unlock(&video->codecMutex);
+                continue;
+            }
+            sws_scale(sws_ctx, avFrame->data, avFrame->linesize, 0, avFrame->height,
+                      pFrameYUV420P->data, pFrameYUV420P->linesize);
+            //渲染
+
+//            double diff = video->getFrameDiffTime(avFrame, NULL);
+//            LOGE("diff is %f", diff);
+//
+//            av_usleep(video->getDelayTime(diff) * 1000000);
+
+            video->callJava->onCallRenderYUV(video->avCodecCtx->width, video->avCodecCtx->height,
+                                             pFrameYUV420P->data[0], pFrameYUV420P->data[1],
+                                             pFrameYUV420P->data[2]);
+        }
         video->freeFrame(avFrame);
         video->freePacket(avPacket);
     }
@@ -69,6 +113,10 @@ void XsVideo::play() {
     if (playStatus != NULL && !playStatus->exit) {
         pthread_create(&thread_play, NULL, playVideo, this);
     }
+}
+
+double XsVideo::getFrameDiffTime(AVFrame *avFrame, AVPacket *avPacket) {
+    return 0;
 }
 
 void XsVideo::freePacket(AVPacket *avPacket) {
@@ -105,3 +153,4 @@ void XsVideo::release() {
         callJava = NULL;
     }
 }
+

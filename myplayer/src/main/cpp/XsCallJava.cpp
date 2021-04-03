@@ -39,6 +39,7 @@ XsCallJava::XsCallJava(JavaVM *javaVM, JNIEnv *env, jobject obj) {
     jmid_timeinfo = jniEnv->GetMethodID(clz, "onCallTimeInfo", "(II)V");
     jmid_error = jniEnv->GetMethodID(clz, "onCallError", "(ILjava/lang/String;)V");
     jmid_complete = jniEnv->GetMethodID(clz, "onCallComplete", "()V");
+    jmid_renderyuv = jniEnv->GetMethodID(clz, "onCallRenderYUV", "(II[B[B[B)V");
 }
 
 XsCallJava::~XsCallJava() {
@@ -129,4 +130,31 @@ void XsCallJava::onCallComplete(int type) {
         jniEnv->CallVoidMethod(jobj, jmid_complete);
         javaVM->DetachCurrentThread();
     }
+}
+
+void XsCallJava::onCallRenderYUV(int width, int height, uint8_t *fy, uint8_t *fu, uint8_t *fv) {
+    JNIEnv *jniEnv;
+    if (javaVM->AttachCurrentThread(&jniEnv, 0) != JNI_OK) {
+        if (LOG_DEBUG) {
+            LOGE("get child thread jniEnv wrong");
+        }
+        return;
+    }
+
+    jbyteArray y = jniEnv->NewByteArray(width * height);
+    jniEnv->SetByteArrayRegion(y, 0, width * height, reinterpret_cast<const jbyte *>(fy));
+
+    jbyteArray u = jniEnv->NewByteArray(width * height / 4);
+    jniEnv->SetByteArrayRegion(u, 0, width * height / 4, reinterpret_cast<const jbyte *>(fu));
+
+    jbyteArray v = jniEnv->NewByteArray(width * height / 4);
+    jniEnv->SetByteArrayRegion(v, 0, width * height / 4, reinterpret_cast<const jbyte *>(fv));
+
+    jniEnv->CallVoidMethod(jobj, jmid_renderyuv, width, height, y, u, v);
+
+    jniEnv->DeleteLocalRef(y);
+    jniEnv->DeleteLocalRef(u);
+    jniEnv->DeleteLocalRef(v);
+
+    javaVM->DetachCurrentThread();
 }

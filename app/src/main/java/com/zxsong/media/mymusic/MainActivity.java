@@ -19,12 +19,14 @@ import com.zxsong.media.myplayer.listener.OnLoadListener;
 import com.zxsong.media.myplayer.listener.OnPauseResumeListener;
 import com.zxsong.media.myplayer.listener.OnPreparedListener;
 import com.zxsong.media.myplayer.listener.OnTimeInfoListener;
+import com.zxsong.media.myplayer.opengl.XsGLSurfaceView;
 import com.zxsong.media.myplayer.player.XsPlayer;
 
 public class MainActivity extends AppCompatActivity {
 
     private XsPlayer mXsPlayer;
     private TextView mTextView;
+    private XsGLSurfaceView mXsGLSurfaceView;
 
     private static final String TAG = "MainActivity";
 
@@ -47,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         mTextView = findViewById(R.id.tv_time);
-
+        mXsGLSurfaceView = findViewById(R.id.xsglsurfaceview);
         mXsPlayer = new XsPlayer();
+
+        mXsPlayer.setXsGLSurfaceView(mXsGLSurfaceView);
         mXsPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared() {

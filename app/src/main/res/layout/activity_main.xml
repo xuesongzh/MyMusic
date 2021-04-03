@@ -1,52 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context="com.zxsong.media.mymusic.MainActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.zxsong.media.mymusic.MainActivity">
 
-    <Button
+    <com.zxsong.media.myplayer.opengl.XsGLSurfaceView
+        android:id="@+id/xsglsurfaceview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start"
-        android:onClick="begin"/>
+        android:layout_height="250dp"/>
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pause"
-        android:onClick="pause"/>
+        android:orientation="horizontal">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/play"
-        android:onClick="resume"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/stop"
-        android:onClick="stop"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/seek"
-        android:onClick="seek"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/next"
-        android:onClick="next"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="begin"
+            android:text="@string/start" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="pause"
+            android:text="@string/pause" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="resume"
+            android:text="@string/play" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="stop"
+            android:text="@string/stop" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="seek"
+            android:text="@string/seek" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="next"
+            android:text="@string/next" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#222222"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
-        android:text="00:00/00:00"/>
+        android:text="00:00/00:00"
+        android:textColor="#222222" />
 
 </LinearLayout>

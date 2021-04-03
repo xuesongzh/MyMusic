@@ -7,9 +7,10 @@
 
 extern "C"
 {
-#include "libavcodec/avcodec.h"
-#include "libswresample/swresample.h"
-#include "libavutil/time.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/time.h>
+#include <libswscale/swscale.h>
 };
 
 class XsVideo {

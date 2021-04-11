@@ -2,6 +2,7 @@ package com.zxsong.media.mymusic;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     public void begin(View view) {
 //        mXsPlayer.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
 //        mXsPlayer.setSource("http://ngcdn004.cnr.cn/live/dszs/index.m3u8");
-        mXsPlayer.setSource("/storage/emulated/0/js.mp4");
+        mXsPlayer.setSource(Environment.getExternalStorageDirectory().getAbsolutePath() + "/123.mp4");
         mXsPlayer.prepared();
     }
 
@@ -156,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void next(View view) {
-        mXsPlayer.playNext("/storage/emulated/0/123.mp4");
+//        mXsPlayer.playNext("/storage/emulated/0/js.mp4");
+        mXsPlayer.playNext(Environment.getExternalStorageDirectory().getAbsolutePath() + "/dxxd.mp4");
     }
 
     Handler mHandler = new Handler() {

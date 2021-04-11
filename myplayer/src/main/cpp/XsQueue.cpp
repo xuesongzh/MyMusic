@@ -109,4 +109,8 @@ void XsQueue::clearAvpacket() {
     pthread_mutex_unlock(&mutexPacket);
 }
 
+void XsQueue::notifyQueue() {
+    pthread_cond_signal(&condPacket);
+}
+
 

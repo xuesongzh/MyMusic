@@ -34,6 +34,9 @@ public:
     pthread_mutex_t init_mutex;
     pthread_mutex_t seek_mutex;
 
+    bool isSupportMediaCodec = false;
+    const AVBitStreamFilter *bsFilter = NULL;
+
 public:
     XsFFmpeg(XsPlaystatus *playStatus, XsCallJava *callJava, const char *url);
     ~XsFFmpeg();

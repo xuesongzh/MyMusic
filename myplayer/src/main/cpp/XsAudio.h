@@ -23,7 +23,7 @@ public:
     int streamIndex = -1;
     AVCodecContext *avCodecCtx = NULL;
     AVCodecParameters *avCodecPar = NULL;
-    XsPlaystatus *playstatus = NULL;
+    XsPlaystatus *playStatus = NULL;
     XsQueue *queue = NULL;
     XsCallJava *callJava = NULL;
 

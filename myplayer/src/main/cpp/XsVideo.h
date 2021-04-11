@@ -5,6 +5,9 @@
 #include "XsQueue.h"
 #include "XsCallJava.h"
 
+#define CODEC_YUV 0
+#define CODEC_MEDIA_CODEC 1
+
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -28,11 +31,9 @@ public:
     double delayTime = 0;
     double defaultDelayTime = 0.04; //sleep一帧时间
     pthread_mutex_t codecMutex;
-//
-//    int codectype = CODEC_YUV;
-//
-//    AVBSFContext *abs_ctx = NULL;
 
+    int codecType = CODEC_YUV;
+    AVBSFContext *bsfCtx = NULL;
 
 
 public:

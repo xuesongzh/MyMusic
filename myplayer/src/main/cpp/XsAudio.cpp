@@ -5,7 +5,7 @@
 #include "XsAudio.h"
 
 XsAudio::XsAudio(XsPlaystatus *playstatus, int sample_rate, XsCallJava *callJava) {
-    this->playstatus = playstatus;
+    this->playStatus = playstatus;
     this->sample_rate = sample_rate;
     this->callJava = callJava;
     queue = new XsQueue(playstatus);
@@ -20,11 +20,15 @@ XsAudio::~XsAudio() {
 void *playAudio(void *data) {
     XsAudio *xsAudio = (XsAudio *) data;
     xsAudio->initOpenSLES();
-    pthread_exit(&xsAudio->playThread);
+//    pthread_exit(&xsAudio->playThread);
+    return nullptr;
 }
 
+
 void XsAudio::play() {
-    pthread_create(&playThread, NULL, playAudio, this);
+    if (playStatus !=NULL && !playStatus->exit) {
+        pthread_create(&playThread, NULL, playAudio, this);
+    }
 }
 
 //FILE *outFile = fopen("/storage/emulated/0/mydream.pcm", "w");
@@ -32,19 +36,19 @@ void XsAudio::play() {
 //AVframe重采样生成PCM数据（转码）
 int XsAudio::resampleAudio() {
 
-    while (playstatus != NULL && !playstatus->exit) {
+    while (playStatus != NULL && !playStatus->exit) {
 
         //添加加载功能
         if (queue->getQueueSize() == 0) {//加载中
-            if (!playstatus->load) {
-                playstatus->load = true;
+            if (!playStatus->load) {
+                playStatus->load = true;
                 callJava->onCallLoad(CHILD_THREAD, true);
             }
             av_usleep(1000 * 100);
             continue;
         } else {
-            if (playstatus->load) {
-                playstatus->load = false;
+            if (playStatus->load) {
+                playStatus->load = false;
                 callJava->onCallLoad(CHILD_THREAD, false);
             }
         }
@@ -307,7 +311,10 @@ void XsAudio::stop() {
 
 void XsAudio::release() {
 
-    stop();
+    if (queue != NULL) {
+        queue->notifyQueue();
+    }
+    pthread_join(playThread, NULL);
 
     //释放队列
     if (queue != NULL) {
@@ -348,8 +355,8 @@ void XsAudio::release() {
         pthread_mutex_unlock(&codecMutex);
     }
 
-    if (playstatus != NULL) {
-        playstatus = NULL;
+    if (playStatus != NULL) {
+        playStatus = NULL;
     }
 
     if (callJava != NULL) {

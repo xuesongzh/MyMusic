@@ -65,10 +65,10 @@ public class XsRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     private int mSamplerOESMediaCodec;
     private int mTextureIdMediaCodec;
     private SurfaceTexture mSurfaceTexture;
-    private Surface surface;
+    private Surface mSurface;
 
-    private OnSurfaceCreateListener onSurfaceCreateListener;
-    private OnRenderListener onRenderListener;
+    private OnSurfaceCreateListener mOnSurfaceCreateListener;
+    private OnRenderListener mOnRenderListener;
 
     public XsRender(Context context) {
         this.context = context;
@@ -90,11 +90,11 @@ public class XsRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     }
 
     public void setOnSurfaceCreateListener(OnSurfaceCreateListener onSurfaceCreateListener) {
-        this.onSurfaceCreateListener = onSurfaceCreateListener;
+        this.mOnSurfaceCreateListener = onSurfaceCreateListener;
     }
 
     public void setOnRenderListener(OnRenderListener onRenderListener) {
-        this.onRenderListener = onRenderListener;
+        this.mOnRenderListener = onRenderListener;
     }
 
     @Override
@@ -122,8 +122,8 @@ public class XsRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        if (onRenderListener != null) {
-            onRenderListener.onRender();
+        if (mOnRenderListener != null) {
+            mOnRenderListener.onRender();
         }
     }
 
@@ -210,17 +210,20 @@ public class XsRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         GLES20.glGenTextures(1, textureIds, 0);
         mTextureIdMediaCodec = textureIds[0];
 
+        // 设置环绕和过滤方式
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 
+        // 􏱲􏱳􏱴􏱵􏰭绑定纹理到SurfaceTexture􏰊
         mSurfaceTexture = new SurfaceTexture(mTextureIdMediaCodec);
-        surface = new Surface(mSurfaceTexture);
+        // 创建surface
+        mSurface = new Surface(mSurfaceTexture);
         mSurfaceTexture.setOnFrameAvailableListener(this);
 
-        if (onSurfaceCreateListener != null) {
-            onSurfaceCreateListener.onSurfaceCreate(surface);
+        if (mOnSurfaceCreateListener != null) {
+            mOnSurfaceCreateListener.onSurfaceCreate(mSurface);
         }
     }
 

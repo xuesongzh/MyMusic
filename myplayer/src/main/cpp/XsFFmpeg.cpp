@@ -20,7 +20,8 @@ XsFFmpeg::~XsFFmpeg() {
 void *decodeFFmpeg(void *data) {
     XsFFmpeg *xsFFmpeg = (XsFFmpeg *) data;
     xsFFmpeg->decodeFFmpegThread();
-    pthread_exit(&xsFFmpeg->decodeThread);
+//    pthread_exit(&xsFFmpeg->decodeThread);
+    return nullptr;
 }
 
 void XsFFmpeg::parpared() {
@@ -127,6 +128,59 @@ void XsFFmpeg::start() {
     }
     video->audio = audio;
 
+    const char *codecName = video->avCodecCtx->codec->name;
+    isSupportMediaCodec = callJava->onCallIsSupportMediaCodec(codecName);
+    if (isSupportMediaCodec) {
+        LOGE("当前设备支持硬解码当前视频");
+
+        //􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉􏰏􏰼􏰱􏰒􏰇􏰈􏰉􏰓􏰂􏱳􏰉获取相应解码器的过滤器
+        if (strcmp(codecName, "h264") == 0) {
+            bsFilter = av_bsf_get_by_name("h264_mp4toannexb");
+        } else if (strcmp(codecName, "h265") == 0) {
+            bsFilter = av_bsf_get_by_name("hevc_mp4toannexb");
+        }
+        if (bsFilter == NULL) {
+            isSupportMediaCodec = false;
+            goto end;
+        }
+
+        //获取过滤器上下文
+        if (av_bsf_alloc(bsFilter, &video->bsfCtx) != 0) {
+            isSupportMediaCodec = false;
+            goto end;
+        }
+
+        //添加解码器属性
+        if (avcodec_parameters_copy(video->bsfCtx->par_in, video->avCodecPar) < 0) {
+            isSupportMediaCodec = false;
+            av_bsf_free(&video->bsfCtx);
+            video->bsfCtx = NULL;
+            goto end;
+        }
+
+        //初始化过滤器上下文
+        if (av_bsf_init(video->bsfCtx) != 0) {
+            isSupportMediaCodec = false;
+            av_bsf_free(&video->bsfCtx);
+            video->bsfCtx = NULL;
+            goto end;
+        }
+        video->bsfCtx->time_base_in = video->time_base;
+    }
+    end:
+
+    if (isSupportMediaCodec) {
+        video->codecType = CODEC_MEDIA_CODEC;
+        video->callJava->onCallInitMediaCodec(codecName, video->avCodecCtx->width,
+                                              video->avCodecCtx->height,
+                                              video->avCodecCtx->extradata_size,
+                                              video->avCodecCtx->extradata_size,
+                                              video->avCodecCtx->extradata,
+                                              video->avCodecCtx->extradata);
+
+    }
+
+
     audio->play();
     video->play();
 
@@ -230,6 +284,7 @@ void XsFFmpeg::release() {
     }
 
     playStatus->exit = true;
+    pthread_join(decodeThread, NULL);
 
     pthread_mutex_lock(&init_mutex);
     int sleepCount = 0;
@@ -357,5 +412,4 @@ void XsFFmpeg::getCodecContext(AVCodecParameters *codecPar, AVCodecContext **avC
         pthread_mutex_unlock(&init_mutex);
         return;
     }
-    return;
 }
